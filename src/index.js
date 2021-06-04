@@ -1,1 +1,8 @@
-export default (input = 'No args passed!') => input;
+module.exports = function logger ( {
+  types: t
+} ) {
+  return {
+    name: 'logger',
+    visitor: {}
+  };
+}
