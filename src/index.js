@@ -1,8 +1,8 @@
-module.exports = function logger ({
+module.exports = function addMetadata ({
   types: t
 }) {
   return {
-    name: 'logger',
+    name: 'addMetadata',
     visitor: {
       FunctionDeclaration: {
         enter (path) {
