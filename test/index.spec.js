@@ -5,11 +5,12 @@ const path = require('path');
 pluginTester({
   plugin: addMetadata,
   pluginName: 'addMetadata',
+  // snapshot: true,
   tests: [
     {
-      title: 'changes this code',
-      fixture: path.join(__dirname, '__fixtures__/logger', 'code.js'),
-      outputFixture: path.join(__dirname, '__fixtures__/logger', 'output.js'),
+      title: 'adds import statement for getTestMetadata',
+      fixture: path.join(__dirname, '__fixtures__/test-metadata', 'code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/test-metadata', 'output.js'),
     },
   ]
 })
