@@ -2,6 +2,8 @@ import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit } from '@ember/test-helpers';
+let testMetadata = getTestMetadata(this);
+testMetadata.filePath = 'string/to/file/path.js';
 const SELECTORS = Object.freeze({
   MOCK_SELECTOR: '[data-test-nav-bar-browse]',
 });

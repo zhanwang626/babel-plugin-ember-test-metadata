@@ -8,7 +8,7 @@ pluginTester({
   // snapshot: true,
   tests: [
     {
-      title: 'adds import statement for getTestMetadata',
+      title: 'adds import & expression statements for getTestMetadata',
       fixture: path.join(__dirname, '__fixtures__/test-metadata', 'code.js'),
       outputFixture: path.join(__dirname, '__fixtures__/test-metadata', 'output.js'),
     },
