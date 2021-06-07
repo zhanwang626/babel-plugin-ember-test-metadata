@@ -1,5 +1,6 @@
 /**
  * TODO:
+ * - how to guard that this only operates on test files?
  * - add this expression: let testMetadata = getTestMetadata(this);
  * - add this expression: testMetadata.filePath = 'string/to/file/path.js';
  * - add logic to get the actual, current file path
@@ -12,7 +13,7 @@ module.exports = function addMetadata ({
   return {
     name: 'addMetadata',
     visitor: {
-      Program (path, state) {
+      Program (path) {
         const identifier = t.identifier('{getTestMetadata}');
         const importDefaultSpecifier = t.importDefaultSpecifier(identifier);
         const importDeclaration = t.importDeclaration([importDefaultSpecifier], t.stringLiteral('@ember/test-helpers'));
