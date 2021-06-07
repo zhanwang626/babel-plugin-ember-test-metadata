@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit } from '@ember/test-helpers';
 let testMetadata = getTestMetadata(this);
-testMetadata.filePath = 'string/to/file/path.js';
+testMetadata.filePath = 'test/__fixtures__/test-metadata/code.js';
 const SELECTORS = Object.freeze({
   MOCK_SELECTOR: '[data-test-nav-bar-browse]',
 });
