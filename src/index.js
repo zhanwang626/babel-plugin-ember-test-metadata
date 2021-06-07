@@ -7,7 +7,10 @@ const path = require('path');
  * ✅ add this expression: let testMetadata = getTestMetadata(this);
  * ✅ add this expression: testMetadata.filePath = 'string/to/file/path.js';
  * ✅ add logic to get the actual, current file path
+ * - refactor to insert expressions in beforeEach; and logic to handle if beforeEach exists or not
  * - add logic to check if test-helpers import statement already exists
+ * - clean up, break out smaller functions
+ * - break out tests. Test more cases.
  */
 
 module.exports = function addMetadata ({
