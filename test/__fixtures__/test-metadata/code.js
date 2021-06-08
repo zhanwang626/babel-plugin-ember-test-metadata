@@ -9,7 +9,13 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
 
+  some.otherThing(function () {
+    noop();
+  })
+
   hooks.beforeEach(function () {
+    const myConst = 0;
+    noop();
     // do some things here
   });
 
