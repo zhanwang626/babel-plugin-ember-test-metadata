@@ -1,4 +1,4 @@
-# ember-babel-add-test-metadata
+# babel-plugin-ember-test-metadata
 
 > A Babel plugin that adds test metadata
 
