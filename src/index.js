@@ -2,20 +2,41 @@ const path = require('path');
 /**
  * TODO:
  * - how to guard that this only operates on test files?
- * - how to first check if @ember/test-helpers dependency is installed?
- * ✅ add a 'getTestMetadata' import statement
- * ✅ add this expression: let testMetadata = getTestMetadata(this);
- * ✅ add this expression: testMetadata.filePath = 'string/to/file/path.js';
- * ✅ add logic to get the actual, current file path
- * ✅ refactor to insert expressions in beforeEach
  * - add tests and logic to handle if beforeEach exists or not
  * - add tests and logic to check if test-helpers import statement already exists
  * - Break out to smaller functions and test. Break out original single test.
  */
 
-module.exports = function addMetadata ({
+function getFilePath(file) {
+  const filePath = file.file.opts.filename;
+  const root = file.file.opts.root;
+  return path.relative(root, filePath);
+}
+
+function writeTestMetadataExpressions(file, node, template) {
+  const testMetadataIdentifier = template.identifier('testMetadata');
+  const getTestMetadataCall = template.callExpression(template.identifier('getTestMetadata'), [template.thisExpression()]);
+  const testMetadataVarDeclaration = template.variableDeclaration(
+    'let',
+    [ template.variableDeclarator(testMetadataIdentifier, getTestMetadataCall) ]
+  );
+
+  const relativeFilePath = getFilePath(file);
+  const filePathStr = template.stringLiteral(relativeFilePath);
+  const testMetadataAssignment = template.assignmentPattern(
+    template.memberExpression(testMetadataIdentifier, template.identifier('filePath')),
+    filePathStr
+  );
+
+  node.arguments[0].body.body.unshift(testMetadataAssignment);
+  node.arguments[0].body.body.unshift(testMetadataVarDeclaration);
+}
+
+export function addMetadata ({
   types: t
 }) {
+  let beforeEachModified = false;
+
   return {
     name: 'addMetadata',
     visitor: {
@@ -27,23 +48,17 @@ module.exports = function addMetadata ({
         );
         babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
       },
-      FunctionExpression(babelPath) {
-        const filePath = this.file.opts.filename;
-        const root = this.file.opts.root;
-        const relativeFilePath = path.relative(root, filePath);
 
-        if (babelPath.parent
-          && t.isMemberExpression(babelPath.parent.callee)
-          && babelPath.parent.callee.property.name === 'beforeEach') {
-          const testMetadataIdentifier = t.identifier('testMetadata');
-          const getTestMetadataCall = t.callExpression(t.identifier('getTestMetadata'), [t.thisExpression()]);
-          const testMetadataVarDeclaration = t.variableDeclaration('let', [t.variableDeclarator(testMetadataIdentifier, getTestMetadataCall)]);
+      CallExpression({ node }) {
+        let hasBeforeEach = node.callee && node.callee.name === 'beforeEach';
+        let hasHooksBeforeEach = node.callee.property && node.callee.property.name === "beforeEach";
 
-          const filePathStr = t.stringLiteral(relativeFilePath);
-          const testMetadataAssignment = t.assignmentPattern(t.memberExpression(testMetadataIdentifier, t.identifier('filePath')), filePathStr);
-
-          babelPath.get('body').unshiftContainer('body', testMetadataAssignment);
-          babelPath.get('body').unshiftContainer('body', testMetadataVarDeclaration);
+        if (hasBeforeEach || hasHooksBeforeEach) {
+          writeTestMetadataExpressions(this, node, t);
+          beforeEachModified = true;
+        } else {
+          // add new beforeEach with testMetadata
+          beforeEachModified = true;
         }
       }
     }

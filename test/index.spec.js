@@ -1,16 +1,30 @@
 const pluginTester = require('babel-plugin-tester').default;
-const addMetadata = require('../src/index');
+const { addMetadata } = require('../src/index');
 const path = require('path');
 
 pluginTester({
   plugin: addMetadata,
   pluginName: 'addMetadata',
-  // snapshot: true,
   tests: [
     {
-      title: 'adds import & expression statements for getTestMetadata',
-      fixture: path.join(__dirname, '__fixtures__/test-metadata', 'code.js'),
-      outputFixture: path.join(__dirname, '__fixtures__/test-metadata', 'output.js'),
+      title: 'for a single beforeEach in a single module, it adds a new import and getTestMetadata statements',
+      fixture: path.join(__dirname, '__fixtures__/', 'one-module-one-beforeeach-new-import-code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/', 'one-module-one-beforeeach-new-import-output.js'),
+    },
+    {
+      title: 'for a single hooks.beforeEach in a single module, it adds a new import and getTestMetadata statements',
+      fixture: path.join(__dirname, '__fixtures__/', 'one-module-one-hooks-beforeeach-new-import-code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/', 'one-module-one-hooks-beforeeach-new-import-output.js'),
+    },
+    {
+      title: 'for beforeEach in multiple modules, it adds a new import and multiple getTestMetadata statements',
+      fixture: path.join(__dirname, '__fixtures__/', 'multiple-module-one-beforeeach-new-import-code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/', 'multiple-module-one-beforeeach-new-import-output.js'),
+    },
+    {
+      title: 'for hooks.beforeEach in multiple modules, it adds a new import and multiple getTestMetadata statements',
+      fixture: path.join(__dirname, '__fixtures__/', 'multiple-module-one-hooks-beforeeach-new-import-code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/', 'multiple-module-one-hooks-beforeeach-new-import-output.js'),
     },
   ]
 })
