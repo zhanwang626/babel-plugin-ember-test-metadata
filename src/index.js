@@ -27,29 +27,23 @@ module.exports = function addMetadata ({
         );
         babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
       },
-      CallExpression(babelPath) {
+      FunctionExpression(babelPath) {
         const filePath = this.file.opts.filename;
         const root = this.file.opts.root;
         const relativeFilePath = path.relative(root, filePath);
 
-        if (babelPath.node.callee.name === 'module') {
-          babelPath.traverse({
-            FunctionExpression(babelPath) {
-              if (babelPath.parent
-                && t.isMemberExpression(babelPath.parent.callee)
-                && babelPath.parent.callee.property.name === 'beforeEach') {
-                const testMetadataIdentifier = t.identifier('testMetadata');
-                const getTestMetadataCall = t.callExpression(t.identifier('getTestMetadata'), [t.thisExpression()]);
-                const testMetadataVarDeclaration = t.variableDeclaration('let', [t.variableDeclarator(testMetadataIdentifier, getTestMetadataCall)]);
+        if (babelPath.parent
+          && t.isMemberExpression(babelPath.parent.callee)
+          && babelPath.parent.callee.property.name === 'beforeEach') {
+          const testMetadataIdentifier = t.identifier('testMetadata');
+          const getTestMetadataCall = t.callExpression(t.identifier('getTestMetadata'), [t.thisExpression()]);
+          const testMetadataVarDeclaration = t.variableDeclaration('let', [t.variableDeclarator(testMetadataIdentifier, getTestMetadataCall)]);
 
-                const filePathStr = t.stringLiteral(relativeFilePath);
-                const testMetadataAssignment = t.assignmentPattern(t.memberExpression(testMetadataIdentifier, t.identifier('filePath')), filePathStr);
+          const filePathStr = t.stringLiteral(relativeFilePath);
+          const testMetadataAssignment = t.assignmentPattern(t.memberExpression(testMetadataIdentifier, t.identifier('filePath')), filePathStr);
 
-                babelPath.get('body').unshiftContainer('body', testMetadataAssignment);
-                babelPath.get('body').unshiftContainer('body', testMetadataVarDeclaration);
-              }
-            }
-          });
+          babelPath.get('body').unshiftContainer('body', testMetadataAssignment);
+          babelPath.get('body').unshiftContainer('body', testMetadataVarDeclaration);
         }
       }
     }
