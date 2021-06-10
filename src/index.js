@@ -1,8 +1,8 @@
 const path = require('path');
 /**
  * TODO:
+ * - Fix: new beforeEach is only partial body because it requires Statement only
  * - how to guard that this only operates on test files?
- * - add tests and logic to handle if beforeEach exists or not
  * - unit test smaller functions
  */
 
@@ -13,22 +13,25 @@ function getFilePath(file) {
 }
 
 function writeTestMetadataExpressions(file, node, types) {
-  const testMetadataIdentifier = types.identifier('testMetadata');
-  const getTestMetadataCall = types.callExpression(types.identifier('getTestMetadata'), [types.thisExpression()]);
-  const testMetadataVarDeclaration = types.variableDeclaration(
-    'let',
-    [ types.variableDeclarator(testMetadataIdentifier, getTestMetadataCall) ]
-  );
+  const testMetadataVarDeclaration = getTestMetadataDeclaration(types);
 
   const relativeFilePath = getFilePath(file);
   const filePathStr = types.stringLiteral(relativeFilePath);
   const testMetadataAssignment = types.assignmentPattern(
-    types.memberExpression(testMetadataIdentifier, types.identifier('filePath')),
+    types.memberExpression(types.identifier('testMetadata'), types.identifier('filePath')),
     filePathStr
   );
 
   node.arguments[0].body.body.unshift(testMetadataAssignment);
   node.arguments[0].body.body.unshift(testMetadataVarDeclaration);
+}
+
+function getTestMetadataDeclaration(types) {
+  const getTestMetadataCall = types.callExpression(types.identifier('getTestMetadata'), [types.thisExpression()]);
+  return types.variableDeclaration(
+    'let',
+    [ types.variableDeclarator(types.identifier('testMetadata'), getTestMetadataCall) ]
+  );
 }
 
 function collectImports(node) {
@@ -46,10 +49,10 @@ export function addMetadata ({
   return {
     name: 'addMetadata',
     visitor: {
-      Program (path) {
+      Program (babelPath) {
         const EMBER_TEST_HELPERS = '@ember/test-helpers';
         const GET_TEST_METADATA ='getTestMetadata';
-        let imports = collectImports(path.node);
+        let imports = collectImports(babelPath.node);
         let emberTestHelpers = imports.filter((imp) => imp.source.value === EMBER_TEST_HELPERS);
 
         importExists = emberTestHelpers !== undefined && emberTestHelpers.length;
@@ -62,21 +65,40 @@ export function addMetadata ({
             [getTestMetaDataImportDefaultSpecifier],
             t.stringLiteral(EMBER_TEST_HELPERS)
           );
-          path.unshiftContainer('body', getTestMetaDataImportDeclaration);
+          babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
         }
       },
 
-      CallExpression({ node }) {
-        const BEFORE_EACH = 'beforeEach';
-        let hasBeforeEach = node.callee && node.callee.name === BEFORE_EACH;
-        let hasHooksBeforeEach = node.callee.property && node.callee.property.name === BEFORE_EACH;
+      CallExpression(babelPath) {
+        // reset at top-level module
+        if (babelPath.scope.block.type === 'Program') beforeEachModified = false;
 
-        if (hasBeforeEach || hasHooksBeforeEach) {
-          writeTestMetadataExpressions(this, node, t);
-          beforeEachModified = true;
-        } else {
-          // add new beforeEach with testMetadata
-          beforeEachModified = true;
+        if (!beforeEachModified) {
+          const BEFORE_EACH = 'beforeEach';
+          const testCalls = ['test', 'skip', 'todo', 'module'];
+          let hasBeforeEach = babelPath.node.callee && babelPath.node.callee.name === BEFORE_EACH;
+          let hasHooksBeforeEach = babelPath.node.callee.property && babelPath.node.callee.property.name === BEFORE_EACH;
+
+
+          if (hasBeforeEach || hasHooksBeforeEach) {
+            writeTestMetadataExpressions(this, babelPath.node, t);
+            beforeEachModified = true;
+          } else if (
+            testCalls.includes(babelPath.node.callee.name) &&
+            babelPath.scope.path.parentPath &&
+            babelPath.scope.path.parentPath.node.callee.name === 'module'
+          ) {
+            const testMetadataVarDeclaration = getTestMetadataDeclaration(t)
+            const beforeEachCallback = t.functionExpression(
+              null,
+              [],
+              t.blockStatement([testMetadataVarDeclaration])
+            );
+            const beforeEachCall = t.callExpression(t.identifier('beforeEach'), [beforeEachCallback]);
+            babelPath.insertBefore(beforeEachCall);
+
+            beforeEachModified = true;
+          }
         }
       }
     }
