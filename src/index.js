@@ -12,18 +12,18 @@ function getFilePath(file) {
   return path.relative(root, filePath);
 }
 
-function writeTestMetadataExpressions(file, node, template) {
-  const testMetadataIdentifier = template.identifier('testMetadata');
-  const getTestMetadataCall = template.callExpression(template.identifier('getTestMetadata'), [template.thisExpression()]);
-  const testMetadataVarDeclaration = template.variableDeclaration(
+function writeTestMetadataExpressions(file, node, types) {
+  const testMetadataIdentifier = types.identifier('testMetadata');
+  const getTestMetadataCall = types.callExpression(types.identifier('getTestMetadata'), [types.thisExpression()]);
+  const testMetadataVarDeclaration = types.variableDeclaration(
     'let',
-    [ template.variableDeclarator(testMetadataIdentifier, getTestMetadataCall) ]
+    [ types.variableDeclarator(testMetadataIdentifier, getTestMetadataCall) ]
   );
 
   const relativeFilePath = getFilePath(file);
-  const filePathStr = template.stringLiteral(relativeFilePath);
-  const testMetadataAssignment = template.assignmentPattern(
-    template.memberExpression(testMetadataIdentifier, template.identifier('filePath')),
+  const filePathStr = types.stringLiteral(relativeFilePath);
+  const testMetadataAssignment = types.assignmentPattern(
+    types.memberExpression(testMetadataIdentifier, types.identifier('filePath')),
     filePathStr
   );
 
