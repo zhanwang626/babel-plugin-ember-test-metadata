@@ -1,6 +1,6 @@
 # babel-plugin-ember-test-metadata
 
-> A Babel plugin that adds test metadata
+> A Babel plugin for Ember apps that adds test metadata
 
 [![Package Version](https://img.shields.io/npm/v/ember-babel-add-test-metadata.svg?style=flat-square)](https://www.npmjs.com/package/ember-babel-add-test-metadata)
 [![Downloads Status](https://img.shields.io/npm/dm/ember-babel-add-test-metadata.svg?style=flat-square)](https://npm-stat.com/charts.html?package=ember-babel-add-test-metadata&from=2016-04-01)
