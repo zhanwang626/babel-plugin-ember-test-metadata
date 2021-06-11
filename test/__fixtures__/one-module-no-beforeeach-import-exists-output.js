@@ -11,6 +11,8 @@ module('Acceptance | browse acceptance test', function (hooks) {
   });
   beforeEach(function () {
     let testMetadata = getTestMetadata(this);
+    testMetadata.filePath =
+      'test/__fixtures__/one-module-no-beforeeach-import-exists-code.js';
   });
   test('it renders browse page', async function (assert) {
     await visit(BROWSE_URL);

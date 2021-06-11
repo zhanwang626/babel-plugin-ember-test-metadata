@@ -1,10 +1,4 @@
 const path = require('path');
-/**
- * TODO:
- * - Fix: new beforeEach is only partial body because it requires Statement only
- * - how to guard that this only operates on test files?
- * - unit test smaller functions
- */
 
 function getFilePath(file) {
   const filePath = file.file.opts.filename;
@@ -14,16 +8,19 @@ function getFilePath(file) {
 
 function writeTestMetadataExpressions(file, node, types) {
   const testMetadataVarDeclaration = getTestMetadataDeclaration(types);
-
-  const relativeFilePath = getFilePath(file);
-  const filePathStr = types.stringLiteral(relativeFilePath);
-  const testMetadataAssignment = types.assignmentPattern(
-    types.memberExpression(types.identifier('testMetadata'), types.identifier('filePath')),
-    filePathStr
-  );
+  const testMetadataAssignment = getTestMetadataAssignment(file, types);
 
   node.arguments[0].body.body.unshift(testMetadataAssignment);
   node.arguments[0].body.body.unshift(testMetadataVarDeclaration);
+}
+
+function getTestMetadataAssignment(file, types) {
+  const relativeFilePath = getFilePath(file);
+  const filePathStr = types.stringLiteral(relativeFilePath);
+  return types.assignmentPattern(
+    types.memberExpression(types.identifier("testMetadata"), types.identifier("filePath")),
+    filePathStr
+  );
 }
 
 function getTestMetadataDeclaration(types) {
@@ -60,9 +57,9 @@ export function addMetadata ({
         if (importExists) {
           emberTestHelpers[0].specifiers.push(t.identifier(GET_TEST_METADATA));
         } else {
-          const getTestMetaDataImportDefaultSpecifier = t.importDefaultSpecifier(t.identifier(`{ ${GET_TEST_METADATA} }`));
+          const getTestMetaDataImportSpecifier = t.importSpecifier(t.identifier(GET_TEST_METADATA), t.identifier(GET_TEST_METADATA));
           const getTestMetaDataImportDeclaration = t.importDeclaration(
-            [getTestMetaDataImportDefaultSpecifier],
+            [getTestMetaDataImportSpecifier],
             t.stringLiteral(EMBER_TEST_HELPERS)
           );
           babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
@@ -76,9 +73,8 @@ export function addMetadata ({
         if (!beforeEachModified) {
           const BEFORE_EACH = 'beforeEach';
           const testCalls = ['test', 'skip', 'todo', 'module'];
-          let hasBeforeEach = babelPath.node.callee && babelPath.node.callee.name === BEFORE_EACH;
-          let hasHooksBeforeEach = babelPath.node.callee.property && babelPath.node.callee.property.name === BEFORE_EACH;
-
+          const hasBeforeEach = babelPath.node.callee && babelPath.node.callee.name === BEFORE_EACH;
+          const hasHooksBeforeEach = babelPath.node.callee.property && babelPath.node.callee.property.name === BEFORE_EACH;
 
           if (hasBeforeEach || hasHooksBeforeEach) {
             writeTestMetadataExpressions(this, babelPath.node, t);
@@ -89,13 +85,16 @@ export function addMetadata ({
             babelPath.scope.path.parentPath.node.callee.name === 'module'
           ) {
             const testMetadataVarDeclaration = getTestMetadataDeclaration(t)
-            const beforeEachCallback = t.functionExpression(
+            const beforeEachFunc = t.functionExpression(
               null,
               [],
               t.blockStatement([testMetadataVarDeclaration])
             );
-            const beforeEachCall = t.callExpression(t.identifier('beforeEach'), [beforeEachCallback]);
+            const beforeEachCall = t.callExpression(t.identifier(BEFORE_EACH), [beforeEachFunc]);
+            const testMetadataAssignment = getTestMetadataAssignment(this, t);
+
             babelPath.insertBefore(beforeEachCall);
+            beforeEachFunc.body.body.push(testMetadataAssignment);
 
             beforeEachModified = true;
           }

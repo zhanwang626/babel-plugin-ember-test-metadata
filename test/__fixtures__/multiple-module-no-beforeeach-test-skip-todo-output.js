@@ -11,6 +11,8 @@ module('Acceptance | browse acceptance test', function (hooks) {
   });
   beforeEach(function () {
     let testMetadata = getTestMetadata(this);
+    testMetadata.filePath =
+      'test/__fixtures__/multiple-module-no-beforeeach-test-skip-todo-code.js';
   });
   skip('it renders browse page', async function (assert) {
     await visit(BROWSE_URL);
@@ -24,6 +26,8 @@ module('Acceptance | browse acceptance test', function (hooks) {
   });
   beforeEach(function () {
     let testMetadata = getTestMetadata(this);
+    testMetadata.filePath =
+      'test/__fixtures__/multiple-module-no-beforeeach-test-skip-todo-code.js';
   });
   todo('it renders browse page', async function (assert) {
     await visit(BROWSE_URL);
