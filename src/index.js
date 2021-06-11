@@ -73,6 +73,7 @@ export function addMetadata ({
         if (!beforeEachModified) {
           const BEFORE_EACH = 'beforeEach';
           const testCalls = ['test', 'skip', 'todo', 'module'];
+          const testCallName = babelPath.node.callee.name || babelPath.node.callee.object.name;
           const hasBeforeEach = babelPath.node.callee && babelPath.node.callee.name === BEFORE_EACH;
           const hasHooksBeforeEach = babelPath.node.callee.property && babelPath.node.callee.property.name === BEFORE_EACH;
 
@@ -80,7 +81,7 @@ export function addMetadata ({
             writeTestMetadataExpressions(this, babelPath.node, t);
             beforeEachModified = true;
           } else if (
-            testCalls.includes(babelPath.node.callee.name) &&
+            testCalls.includes(testCallName) &&
             babelPath.scope.path.parentPath &&
             babelPath.scope.path.parentPath.node.callee.name === 'module'
           ) {

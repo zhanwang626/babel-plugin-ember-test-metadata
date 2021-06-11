@@ -37,6 +37,12 @@ pluginTester({
       outputFixture: path.join(__dirname, '__fixtures__/', 'one-module-no-beforeeach-import-exists-output.js'),
     },
     {
+      title: `for a single module without any beforeEach and a memberExpression test call,
+       it adds a new beforeEach & getTestMetadata statements`,
+      fixture: path.join(__dirname, '__fixtures__/', 'one-module-no-beforeeach-test-member-code.js'),
+      outputFixture: path.join(__dirname, '__fixtures__/', 'one-module-no-beforeeach-test-member-output.js'),
+    },
+    {
       title: 'for multiple sibling modules without any beforeEach, it adds a new beforeEach & getTestMetadata statements',
       fixture: path.join(__dirname, '__fixtures__/', 'multiple-module-no-beforeeach-import-exists-code.js'),
       outputFixture: path.join(__dirname, '__fixtures__/', 'multiple-module-no-beforeeach-import-exists-output.js'),
