@@ -1,5 +1,5 @@
 {
-  "name": "@babel-plugin-ember-test-metadata/ember-babel-add-test-metadata",
+  "name": "babel-plugin-ember-test-metadata",
   "version": "0.0.0",
   "description": "adds test metadata",
   "keywords": [],
@@ -21,7 +21,7 @@
     "postbuild": "rimraf dist/**/*.test.js",
     "test:watch": "jest --watch",
     "test:xo": "xo && jest --coverage",
-    "test": "jest test/"
+    "test": "jest"
   },
   "husky": {
     "hooks": {
