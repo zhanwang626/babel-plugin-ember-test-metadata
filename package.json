@@ -1,7 +1,7 @@
 {
-  "name": "ember-babel-add-test-metadata",
+  "name": "babel-plugin-ember-test-metadata",
   "version": "0.0.0",
-  "description": "adds test metadata",
+  "description": "A Babel plugin for Ember apps that adds a test's file path to test metadata",
   "keywords": [],
   "repository": "https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "postbuild": "rimraf dist/**/*.test.js",
     "test:watch": "jest --watch",
     "test:xo": "xo && jest --coverage",
-    "test": "./node_modules/.bin/jest test/"
+    "test": "jest"
   },
   "husky": {
     "hooks": {
@@ -57,7 +57,8 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.js$": "babel-jest"
-    }
+    },
+    "testPathIgnorePatterns": [ "/__fixtures__/" ]
   },
   "dependencies": {},
   "devDependencies": {

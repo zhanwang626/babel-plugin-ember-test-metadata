@@ -12,9 +12,9 @@ module('Acceptance | browse acceptance test', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(this);
     testMetadata.filePath =
-      'test/__fixtures__/one-module-no-beforeeach-test-member-code.js';
+      '__tests__/__fixtures__/one-module-no-beforeeach-import-exists-code.js';
   });
-  test.only('it renders browse page', async function (assert) {
+  test('it renders browse page', async function (assert) {
     await visit(BROWSE_URL);
     assert.dom(SELECTORS.MOCK_SELECTOR).exists();
   });
