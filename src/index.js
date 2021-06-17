@@ -72,26 +72,25 @@ function getTestMetadataDeclaration(t) {
  */
 export function addMetadata({ types: t }) {
   // TODO: Refactor to properly use state.opts
-  let importExists = false;
   let beforeEachModified = false;
 
   return {
     name: 'addMetadata',
     visitor: {
-      Program(babelPath) {
+      Program({ node }) {
         const EMBER_TEST_HELPERS = '@ember/test-helpers';
         const GET_TEST_METADATA = 'getTestMetadata';
-        const imports = babelPath.node.body.filter(maybeImport => {
+        const imports = node.body.filter(maybeImport => {
           return maybeImport.type === 'ImportDeclaration';
         });
         const emberTestHelpers = imports.filter(
           imp => imp.source.value === EMBER_TEST_HELPERS
         );
-
-        importExists =
-          emberTestHelpers !== undefined && emberTestHelpers.length;
+        const importExists =
+          emberTestHelpers !== undefined && emberTestHelpers.length > 0;
 
         if (importExists) {
+          // Append to existing test-helpers import
           emberTestHelpers[0].specifiers.push(t.identifier(GET_TEST_METADATA));
         } else {
           const getTestMetaDataImportSpecifier = t.importSpecifier(
@@ -102,13 +101,12 @@ export function addMetadata({ types: t }) {
             [getTestMetaDataImportSpecifier],
             t.stringLiteral(EMBER_TEST_HELPERS)
           );
-          // TODO: Refactor to insert import after last existing import statement
-          babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
+
+          node.body.splice(imports.length, 0, getTestMetaDataImportDeclaration);
         }
       },
 
       CallExpression(babelPath, state) {
-        // TODO: Refactor to properly use state.opts
         // Reset at top-level module
         if (babelPath.scope.block.type === 'Program')
           beforeEachModified = false;
