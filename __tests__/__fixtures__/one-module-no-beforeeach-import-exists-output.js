@@ -12,18 +12,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(this);
     testMetadata.filePath =
-      '__test__/__fixtures__/nested-modules-with-beforeeach-import-exists-code.js';
-    const myConst = 0;
-    noop(); // do some things here
-  });
-  module('nested module', () => {
-    beforeEach(() => {
-      // nested beforeEach should be left untouched
-    });
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
+      '__tests__/__fixtures__/one-module-no-beforeeach-import-exists-code.js';
   });
   test('it renders browse page', async function (assert) {
     await visit(BROWSE_URL);

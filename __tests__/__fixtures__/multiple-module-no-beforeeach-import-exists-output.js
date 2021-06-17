@@ -12,15 +12,24 @@ module('Acceptance | browse acceptance test', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(this);
     testMetadata.filePath =
-      '__test__/__fixtures__/nested-modules-no-beforeeach-import-exists-code.js';
-  });
-  module('nested module', () => {
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
+      '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-code.js';
   });
   test('it renders browse page', async function (assert) {
+    await visit(BROWSE_URL);
+    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  });
+});
+module('Acceptance | search acceptance test', function (hooks) {
+  setupApplicationTest(hooks);
+  some.otherThing(function () {
+    noop();
+  });
+  hooks.beforeEach(function () {
+    let testMetadata = getTestMetadata(this);
+    testMetadata.filePath =
+      '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-code.js';
+  });
+  test('it renders search', async function (assert) {
     await visit(BROWSE_URL);
     assert.dom(SELECTORS.MOCK_SELECTOR).exists();
   });
