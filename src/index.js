@@ -9,7 +9,7 @@ const path = require('path');
  * @param {boolean} hasBeforeEach  - if true, write expressions into existing beforeEach,
  *   otherwise write a new beforeEach
  */
- function writeTestMetadataExpressions(state, babelPath, t, hasBeforeEach) {
+function writeTestMetadataExpressions(state, babelPath, t, hasBeforeEach) {
   const testMetadataVarDeclaration = getTestMetadataDeclaration(t);
   const testMetadataAssignment = getTestMetadataAssignment(state, t);
 
@@ -28,10 +28,7 @@ const path = require('path');
       ])
     );
     const beforeEachExpression = t.callExpression(
-      t.memberExpression(
-        t.identifier('hooks'),
-        t.identifier('beforeEach')
-      ),
+      t.memberExpression(t.identifier('hooks'), t.identifier('beforeEach')),
       [beforeEachFunc]
     );
 
@@ -84,21 +81,18 @@ function getTestMetadataDeclaration(t) {
  * @param {object} Babel object
  * @returns Babel plugin object with Program and CallExpression visitors
  */
-export function addMetadata({ types: t }) {
-  // TODO: Refactor to properly use state.opts
-  let beforeEachModified = false;
-
+function addMetadata({ types: t }) {
   return {
     name: 'addMetadata',
     visitor: {
       Program({ node }) {
         const EMBER_TEST_HELPERS = '@ember/test-helpers';
         const GET_TEST_METADATA = 'getTestMetadata';
-        const imports = node.body.filter(maybeImport => {
+        const imports = node.body.filter((maybeImport) => {
           return maybeImport.type === 'ImportDeclaration';
         });
         const emberTestHelpers = imports.filter(
-          imp => imp.source.value === EMBER_TEST_HELPERS
+          (imp) => imp.source.value === EMBER_TEST_HELPERS
         );
         const importExists =
           emberTestHelpers !== undefined && emberTestHelpers.length > 0;
@@ -169,3 +163,5 @@ export function addMetadata({ types: t }) {
     },
   };
 }
+
+module.exports = addMetadata;
