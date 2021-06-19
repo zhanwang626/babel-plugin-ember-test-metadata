@@ -1,3 +1,12 @@
+## v0.1.0-alpha.1 (2021-06-18)
+
+#### :house: Internal
+* [#9](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/9) remove xo, install eslint, fix lint errors ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
+
 ## v0.1.0-alpha.0 (2021-06-18)
 
 #### :house: Internal
