@@ -25,7 +25,7 @@ yarn add babel-plugin-ember-test-metadata -D
 
 ## Usage
 
-This plugin needs to be configured in your `ember-cli-build.js` file by adding it you babel's plugins array:
+This plugin needs to be configured in your `ember-cli-build.js` file by adding it your babel's plugins array:
 
 ```js
 'use strict';
