@@ -1,3 +1,14 @@
+## v1.0.0-beta.0 (2021-06-24)
+
+#### :house: Internal
+* [#11](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/11) Removes package-lock.json ([@scalvert](https://github.com/scalvert))
+* [#10](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/10) Fixes/updates for testing in a simple ember app ([@glnster](https://github.com/glnster))
+
+#### Committers: 2
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
 ## v0.1.0-alpha.1 (2021-06-18)
 
 #### :house: Internal
