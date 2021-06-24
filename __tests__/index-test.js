@@ -5,6 +5,7 @@ const path = require('path');
 pluginTester({
   plugin: addMetadata,
   pluginName: 'addMetadata',
+  snapshot: true,
   tests: [
     {
       title:
@@ -12,12 +13,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'one-module-one-beforeeach-new-import-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'one-module-one-beforeeach-new-import-output.js'
+        'one-module-one-beforeeach-new-import-input-test.js'
       ),
     },
     {
@@ -26,12 +22,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'multiple-module-one-beforeeach-new-import-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'multiple-module-one-beforeeach-new-import-output.js'
+        'multiple-module-one-beforeeach-new-import-input-test.js'
       ),
     },
     {
@@ -40,12 +31,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'one-module-one-beforeeach-import-exists-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'one-module-one-beforeeach-import-exists-output.js'
+        'one-module-one-beforeeach-import-exists-input-test.js'
       ),
     },
     {
@@ -54,12 +40,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'one-module-no-beforeeach-import-exists-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'one-module-no-beforeeach-import-exists-output.js'
+        'one-module-no-beforeeach-import-exists-input-test.js'
       ),
     },
     {
@@ -68,12 +49,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'one-module-no-beforeeach-test-member-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'one-module-no-beforeeach-test-member-output.js'
+        'one-module-no-beforeeach-test-member-input-test.js'
       ),
     },
     {
@@ -82,12 +58,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'multiple-module-no-beforeeach-import-exists-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'multiple-module-no-beforeeach-import-exists-output.js'
+        'multiple-module-no-beforeeach-import-exists-input-test.js'
       ),
     },
     {
@@ -96,12 +67,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'multiple-module-no-beforeeach-test-skip-todo-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'multiple-module-no-beforeeach-test-skip-todo-output.js'
+        'multiple-module-no-beforeeach-test-skip-todo-input-test.js'
       ),
     },
     {
@@ -110,12 +76,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'nested-modules-no-beforeeach-import-exists-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'nested-modules-no-beforeeach-import-exists-output.js'
+        'nested-modules-no-beforeeach-import-exists-input-test.js'
       ),
     },
     {
@@ -124,12 +85,7 @@ pluginTester({
       fixture: path.join(
         __dirname,
         '__fixtures__/',
-        'nested-modules-with-beforeeach-import-exists-code.js'
-      ),
-      outputFixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'nested-modules-with-beforeeach-import-exists-output.js'
+        'nested-modules-with-beforeeach-import-exists-input-test.js'
       ),
     },
   ],

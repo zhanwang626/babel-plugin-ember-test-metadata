@@ -10,26 +10,36 @@ const path = require('path');
  *   otherwise write a new beforeEach
  */
 function writeTestMetadataExpressions(state, babelPath, t, hasBeforeEach) {
-  const testMetadataVarDeclaration = getTestMetadataDeclaration(t);
+  const testMetadataVarDeclaration = getTestMetadataDeclaration(state, t);
   const testMetadataAssignment = getTestMetadataAssignment(state, t);
 
   if (hasBeforeEach) {
-    const { body } = babelPath.node.arguments[0].body;
+    const functionBlock = babelPath.get('arguments')[0];
+    const functionBlockBody = functionBlock.get('body');
+    const functionBlockBodyStatementsArray = functionBlockBody.get('body');
+    let existingMetadataDeclaration;
 
-    body.unshift(testMetadataAssignment);
-    body.unshift(testMetadataVarDeclaration);
+    if (functionBlockBodyStatementsArray.length > 0) {
+      existingMetadataDeclaration = functionBlockBodyStatementsArray.find(
+        hasMetadataDeclaration
+      );
+    }
+
+    if (!existingMetadataDeclaration) {
+      functionBlockBody.unshiftContainer('body', testMetadataAssignment);
+      functionBlockBody.unshiftContainer('body', testMetadataVarDeclaration);
+    }
   } else {
     const beforeEachFunc = t.functionExpression(
       null,
       [],
-      t.blockStatement([
-        testMetadataVarDeclaration,
-        t.expressionStatement(testMetadataAssignment),
-      ])
+      t.blockStatement([testMetadataVarDeclaration, testMetadataAssignment])
     );
-    const beforeEachExpression = t.callExpression(
-      t.memberExpression(t.identifier('hooks'), t.identifier('beforeEach')),
-      [beforeEachFunc]
+    const beforeEachExpression = t.expressionStatement(
+      t.callExpression(
+        t.memberExpression(t.identifier('hooks'), t.identifier('beforeEach')),
+        [beforeEachFunc]
+      )
     );
 
     babelPath.insertBefore(beforeEachExpression);
@@ -46,10 +56,15 @@ function getTestMetadataAssignment(state, t) {
   const { root, filename } = state.file.opts;
   const relativeFilePath = path.relative(root, filename);
 
-  return t.assignmentExpression(
-    '=',
-    t.memberExpression(t.identifier('testMetadata'), t.identifier('filePath')),
-    t.stringLiteral(relativeFilePath)
+  return t.expressionStatement(
+    t.assignmentExpression(
+      '=',
+      t.memberExpression(
+        t.identifier('testMetadata'),
+        t.identifier('filePath')
+      ),
+      t.stringLiteral(relativeFilePath)
+    )
   );
 }
 
@@ -58,9 +73,9 @@ function getTestMetadataAssignment(state, t) {
  * @param {object} t - Babel types
  * @returns Babel variable declaration
  */
-function getTestMetadataDeclaration(t) {
+function getTestMetadataDeclaration(state, t) {
   const getTestMetadataExpression = t.callExpression(
-    t.identifier('getTestMetadata'),
+    t.identifier(state.opts.getTestMetadataUID.name),
     [t.thisExpression()]
   );
 
@@ -70,6 +85,21 @@ function getTestMetadataDeclaration(t) {
       getTestMetadataExpression
     ),
   ]);
+}
+
+function shouldLoadFile(filename) {
+  return filename.match(/[-_]test\.js/gi);
+}
+
+function hasMetadataDeclaration({ node }) {
+  if (node.expression && node.expression.type === 'AssignmentExpression') {
+    return (
+      node.expression.left.object.name === 'testMetadata' &&
+      node.expression.left.property.name === 'filePath'
+    );
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -85,32 +115,42 @@ function addMetadata({ types: t }) {
   return {
     name: 'addMetadata',
     visitor: {
-      Program({ node }) {
-        const EMBER_TEST_HELPERS = '@ember/test-helpers';
+      Program(babelPath, state) {
         const GET_TEST_METADATA = 'getTestMetadata';
-        const imports = node.body.filter((maybeImport) => {
-          return maybeImport.type === 'ImportDeclaration';
-        });
-        const emberTestHelpers = imports.filter(
-          (imp) => imp.source.value === EMBER_TEST_HELPERS
-        );
-        const importExists =
-          emberTestHelpers !== undefined && emberTestHelpers.length > 0;
+        const { filename } = state.file.opts;
+        state.opts.shouldLoadFile = shouldLoadFile(filename);
 
-        if (importExists) {
+        if (!state.opts.shouldLoadFile) {
+          return;
+        }
+
+        let importDeclarations = babelPath
+          .get('body')
+          .filter((n) => n.type === 'ImportDeclaration');
+        let emberTestHelpersIndex = importDeclarations.findIndex(
+          (n) => n.get('source').get('value').node === '@ember/test-helpers'
+        );
+
+        state.opts.getTestMetadataUID =
+          babelPath.scope.generateUidIdentifier(GET_TEST_METADATA);
+
+        const getTestMetaDataImportSpecifier = t.importSpecifier(
+          state.opts.getTestMetadataUID,
+          t.identifier(GET_TEST_METADATA)
+        );
+
+        if (emberTestHelpersIndex > 0) {
           // Append to existing test-helpers import
-          emberTestHelpers[0].specifiers.push(t.identifier(GET_TEST_METADATA));
+          importDeclarations[emberTestHelpersIndex]
+            .get('body')
+            .container.specifiers.push(getTestMetaDataImportSpecifier);
         } else {
-          const getTestMetaDataImportSpecifier = t.importSpecifier(
-            t.identifier(GET_TEST_METADATA),
-            t.identifier(GET_TEST_METADATA)
-          );
           const getTestMetaDataImportDeclaration = t.importDeclaration(
             [getTestMetaDataImportSpecifier],
-            t.stringLiteral(EMBER_TEST_HELPERS)
+            t.stringLiteral('@ember/test-helpers')
           );
 
-          node.body.splice(imports.length, 0, getTestMetaDataImportDeclaration);
+          babelPath.unshiftContainer('body', getTestMetaDataImportDeclaration);
         }
       },
 
@@ -134,6 +174,8 @@ function addMetadata({ types: t }) {
        * @param {object} state
        */
       CallExpression(babelPath, state) {
+        if (!state.opts.shouldLoadFile) return;
+
         // If we're at a top-level call expression, then we reset the beforeEachModified state to false, and let Babel
         // move on to the next call expression.
         if (babelPath.scope.block.type === 'Program') {
@@ -142,16 +184,24 @@ function addMetadata({ types: t }) {
         }
 
         if (!state.opts.beforeEachModified) {
-          const hasBeforeEach =
-            babelPath.node.callee.property &&
-            babelPath.node.callee.property.name === 'beforeEach';
+          const hasBeforeEach = babelPath.node.callee.property
+            ? babelPath.node.callee.property.name === 'beforeEach'
+            : false;
           const testMethodCalls = ['test', 'module'];
-          const nodeName =
-            babelPath.node.callee.name || babelPath.node.callee.object.name;
+
+          let nodeName = '';
+
+          if (babelPath.node.callee.name) {
+            nodeName = babelPath.node.callee.name;
+          } else if (babelPath.node.callee.object) {
+            nodeName = babelPath.node.callee.object.name;
+          }
+
           const isFirstChildTestMethodCall =
             testMethodCalls.includes(nodeName) &&
             babelPath.scope.path.parentPath &&
             babelPath.scope.path.parentPath.node.callee.name === 'module';
+
           const shouldDoTransform = hasBeforeEach || isFirstChildTestMethodCall;
 
           if (shouldDoTransform) {
