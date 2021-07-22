@@ -54,20 +54,20 @@ pluginTester({
     },
     {
       title:
+        'for a module with a beforeEach that is passed an async function callback, getTestMetadata statements are adding correctly',
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-one-async-beforeeach-new-import-input-test.js'
+      ),
+    },
+    {
+      title:
         'for multiple sibling modules without any beforeEach, it adds a new beforeEach & getTestMetadata statements',
       fixture: path.join(
         __dirname,
         '__fixtures__/',
         'multiple-module-no-beforeeach-import-exists-input-test.js'
-      ),
-    },
-    {
-      title:
-        'for modules without any beforeEach, it adds a new beforeEach after the first call of either "test", "skip" or "todo"',
-      fixture: path.join(
-        __dirname,
-        '__fixtures__/',
-        'multiple-module-no-beforeeach-test-skip-todo-input-test.js'
       ),
     },
     {
@@ -86,6 +86,42 @@ pluginTester({
         __dirname,
         '__fixtures__/',
         'nested-modules-with-beforeeach-import-exists-input-test.js'
+      ),
+    },
+    {
+      title:
+        'for a module without any beforeEach and without any setup calls, it adds a new beforeEach at the top of the module',
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-no-beforeeach-no-hooks-no-setup-test.js'
+      ),
+    },
+    {
+      title:
+        "for a module's function param that does not pass in hooks, pass in hooks",
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-no-beforeeach-no-hooks-test.js'
+      ),
+    },
+    {
+      title:
+        'for a module without a beforeEach and where its function param passes in a custom hooks name, create our new beforeEach called from their custom hooks object',
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-no-beforeeach-custom-hooks-name-test.js'
+      ),
+    },
+    {
+      title:
+        'for a module without a beforeEach and with multiple setup calls, insert our new beforeEach after the setup calls',
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-no-beforeeach-multiple-setup-calls-test.js'
       ),
     },
   ],

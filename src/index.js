@@ -1,49 +1,132 @@
 const path = require('path');
+// eslint-disable-next-line node/no-unpublished-require
+const getNodeProperty = require('../src/utils.js');
 
 /**
- * Write the test metadata expressions either into the body of the existing beforeEach, or
- * wrapped in a new beforeEach which is inserted just above the given babelPath
- * @param {object} state - Babel state
- * @param {object} babelPath - Babel path
- * @param {object} t  - Babel types
- * @param {boolean} hasBeforeEach  - if true, write expressions into existing beforeEach,
- *   otherwise write a new beforeEach
+ * Checks if the call expression matches a test setup call pattern.
+ * @param {object} Babel node object
+ * @param {object} t Babel types
+ * @param {string} hooksIdentifier - "hooks" passed into module's function arg
+ * @returns {Boolean} - if the call expression has a setup call pattern,
+ *   e.g. setupApplication(hooks), then return true
  */
-function writeTestMetadataExpressions(state, babelPath, t, hasBeforeEach) {
+function isSetupCall({ node }, t, hooksIdentifier) {
+  return (
+    t.isCallExpression(node.expression) &&
+    t.isIdentifier(node.expression.arguments[0]) &&
+    node.expression.arguments[0].name === hooksIdentifier
+  );
+}
+
+/**
+ * Gets the last setup call expression node path.
+ * @param {array} callsArray Babel array of call expression node paths representing calls within a function block
+ * @param {object} t Babel types
+ * @param {string} hooksIdentifier - "hooks" passed into module's function arg
+ * @returns {object} a Babel node path that is the last setup call expression, e.g. setupApplication(hooks)
+ */
+function getLastSetupCall(callsArray, t, hooksIdentifier) {
+  if (callsArray.length === 1 && isSetupCall(callsArray[0], t, hooksIdentifier))
+    return callsArray[0];
+
+  for (let nextCall, i = 0; i < callsArray.length; i++) {
+    nextCall = callsArray[i + 1];
+    if (nextCall && !isSetupCall(nextCall, t, hooksIdentifier)) {
+      return callsArray[i];
+    }
+  }
+}
+
+/**
+ * Checks if the node is a beforeEach call.
+ * @param {object} node Babel node expression path
+ * @returns {Boolean}
+ */
+function isBeforeEach(node) {
+  const calleePropertyName = getNodeProperty(node, 'property.name');
+  return calleePropertyName === 'beforeEach';
+}
+
+/**
+ * Gets any existing beforeEach call as a node path.
+ * @param {array} nodes Babel array of node paths within a function block
+ * @returns {object} Babel node path call expression of a beforeEach call
+ */
+function getExistingBeforeEach(nodes, t) {
+  for (const node of nodes) {
+    if (
+      t.isExpressionStatement(node) &&
+      isBeforeEach(getNodeProperty(node, 'node.expression.callee'))
+    ) {
+      return node.get('expression');
+    }
+  }
+}
+
+/**
+ * Adds test metadata statements to the top of an existing beforeEach call function block.
+ * Updates state.opts.transformedModules [] with the name of the test module transformed.
+ * @param {object} state - Babel state
+ * @param {object} beforeEachExpression - the beforeEach Babel call expression
+ * @param {object} t Babel types
+ */
+function insertMetaDataInBeforeEach(state, beforeEachExpression, t) {
   const testMetadataVarDeclaration = getTestMetadataDeclaration(state, t);
   const testMetadataAssignment = getTestMetadataAssignment(state, t);
 
-  if (hasBeforeEach) {
-    const functionBlock = babelPath.get('arguments')[0];
-    const functionBlockBody = functionBlock.get('body');
-    const functionBlockBodyStatementsArray = functionBlockBody.get('body');
-    let existingMetadataDeclaration;
+  const functionBlock = beforeEachExpression.get('arguments')[0];
+  const functionBlockBody = functionBlock.get('body');
+  const functionBlockBodyStatementsArray = functionBlockBody.get('body');
+  let existingMetadataDeclaration;
 
-    if (functionBlockBodyStatementsArray.length > 0) {
-      existingMetadataDeclaration = functionBlockBodyStatementsArray.find(
-        hasMetadataDeclaration
-      );
-    }
-
-    if (!existingMetadataDeclaration) {
-      functionBlockBody.unshiftContainer('body', testMetadataAssignment);
-      functionBlockBody.unshiftContainer('body', testMetadataVarDeclaration);
-    }
-  } else {
-    const beforeEachFunc = t.functionExpression(
-      null,
-      [],
-      t.blockStatement([testMetadataVarDeclaration, testMetadataAssignment])
+  if (functionBlockBodyStatementsArray.length > 0) {
+    existingMetadataDeclaration = functionBlockBodyStatementsArray.find(
+      (node) => hasMetadataDeclaration(node)
     );
-    const beforeEachExpression = t.expressionStatement(
-      t.callExpression(
-        t.memberExpression(t.identifier('hooks'), t.identifier('beforeEach')),
-        [beforeEachFunc]
-      )
-    );
-
-    babelPath.insertBefore(beforeEachExpression);
   }
+
+  if (!existingMetadataDeclaration) {
+    functionBlockBody.unshiftContainer('body', testMetadataAssignment);
+    functionBlockBody.unshiftContainer('body', testMetadataVarDeclaration);
+
+    state.opts.transformedModules.push(state.opts.moduleName);
+  }
+}
+
+/**
+ * Creates a new beforeEach call with the test metadata statements.
+ * Inserts this new beforeEach below any existing setup calls, else
+ * at the top of the test module function block.
+ * Updates state.opts.transformedModules [] with the name of the test module transformed.
+ * @param {object} state - Babel state
+ * @param {object} t  - Babel types
+ */
+function insertNewBeforeEach(state, t) {
+  const testMetadataVarDeclaration = getTestMetadataDeclaration(state, t);
+  const testMetadataAssignment = getTestMetadataAssignment(state, t);
+  const beforeEachFunc = t.functionExpression(
+    null,
+    [],
+    t.blockStatement([testMetadataVarDeclaration, testMetadataAssignment])
+  );
+  const beforeEachExpression = t.expressionStatement(
+    t.callExpression(
+      t.memberExpression(
+        t.identifier(state.opts.hooksIdentifier),
+        t.identifier('beforeEach')
+      ),
+      [beforeEachFunc]
+    )
+  );
+
+  if (state.opts.setupCall) {
+    state.opts.setupCall.insertAfter(beforeEachExpression);
+  } else {
+    const moduleFunctionBlockBody = state.opts.moduleFunction.get('body');
+    moduleFunctionBlockBody.unshiftContainer('body', beforeEachExpression);
+  }
+
+  state.opts.transformedModules.push(state.opts.moduleName);
 }
 
 /**
@@ -87,19 +170,26 @@ function getTestMetadataDeclaration(state, t) {
   ]);
 }
 
-function shouldLoadFile(filename) {
-  return filename.match(/[-_]test\.js/gi);
+/**
+ * Checks whether a test metadata statement already exists.
+ * @param {object} node - Babel node path
+ * @param {object} t - Babel types
+ * @returns {Boolean}
+ */
+function hasMetadataDeclaration({ node }) {
+  return (
+    getNodeProperty(node.expression, 'left.object.name') === 'testMetadata' &&
+    getNodeProperty(node.expression, 'left.property.name') === 'filePath'
+  );
 }
 
-function hasMetadataDeclaration({ node }) {
-  if (node.expression && node.expression.type === 'AssignmentExpression') {
-    return (
-      node.expression.left.object.name === 'testMetadata' &&
-      node.expression.left.property.name === 'filePath'
-    );
-  } else {
-    return false;
-  }
+/**
+ * Checks for files ending with "-test.js" or "_test.js"
+ * @param {string} filename File name which may include file path
+ * @returns {Boolean}
+ */
+function shouldLoadFile(filename) {
+  return filename.match(/[-_]test\.js/gi);
 }
 
 /**
@@ -123,6 +213,12 @@ function addMetadata({ types: t }) {
         if (!state.opts.shouldLoadFile) {
           return;
         }
+
+        state.opts.transformedModules = [];
+        state.opts.setupCall;
+        state.opts.moduleFunction;
+        state.opts.hasModuleFunction;
+        state.opts.hooksIdentifier;
 
         let importDeclarations = babelPath
           .get('body')
@@ -155,15 +251,8 @@ function addMetadata({ types: t }) {
       },
 
       /**
-       * Do transforms for adding our test metadata expressions to beforeEach.
        * For each top-level module (in QUnit there can be sibling and/or nested modules), only 1 beforeEach should apply,
-       * and so only 1 beforeEach will be added/transformed per top-level module. As Babel traverses through each call
-       * expression, we're only concerned about operating on call expressions inside of top-level module calls.
-       *
-       * While inside a top-level module, we check the current call expression for either of these conditions:
-       *   1. if it's a beforeEach, then we add our test metadata expressions to it.
-       *   2. if it's a call to either "test" or to a nested "module", then we want to add a new beforeEach just above it
-       * If the current call is neither of these, then do nothing. Babel will move on to the next call expression.
+       * and so only 1 beforeEach will be added/transformed per top-level module.
        *
        * The transformed beforeEach would look like:
           hooks.beforeEach(function () {
@@ -176,37 +265,56 @@ function addMetadata({ types: t }) {
       CallExpression(babelPath, state) {
         if (!state.opts.shouldLoadFile) return;
 
-        // If we're at a top-level call expression, then we reset the beforeEachModified state to false, and let Babel
-        // move on to the next call expression.
-        if (babelPath.scope.block.type === 'Program') {
-          state.opts.beforeEachModified = false;
-          return;
+        let moduleName;
+        let moduleFunction;
+
+        // If this call expression is a top-level module, store module name string, else skip the nested module entirely
+        if (babelPath.get('callee').isIdentifier({ name: 'module' })) {
+          if (babelPath.parentPath.parent.type === 'Program') {
+            [moduleName, moduleFunction] = babelPath.get('arguments');
+
+            const moduleFunctionParams = moduleFunction
+              ? moduleFunction.get('params')
+              : [];
+
+            state.opts.hooksIdentifier = getNodeProperty(
+              moduleFunctionParams[0],
+              'node.name'
+            );
+            state.opts.moduleName = moduleName.node.value;
+            state.opts.moduleFunction = moduleFunction;
+          } else {
+            // skip traversing contents in this nested module
+            babelPath.skip();
+          }
         }
 
-        if (!state.opts.beforeEachModified) {
-          const hasBeforeEach = babelPath.node.callee.property
-            ? babelPath.node.callee.property.name === 'beforeEach'
-            : false;
-          const testMethodCalls = ['test', 'module'];
-
-          let nodeName = '';
-
-          if (babelPath.node.callee.name) {
-            nodeName = babelPath.node.callee.name;
-          } else if (babelPath.node.callee.object) {
-            nodeName = babelPath.node.callee.object.name;
+        if (
+          state.opts.moduleName &&
+          !state.opts.transformedModules.includes(state.opts.moduleName)
+        ) {
+          if (!state.opts.hooksIdentifier) {
+            state.opts.moduleFunction.node.params.push(t.Identifier('hooks'));
+            state.opts.hooksIdentifier = 'hooks';
           }
 
-          const isFirstChildTestMethodCall =
-            testMethodCalls.includes(nodeName) &&
-            babelPath.scope.path.parentPath &&
-            babelPath.scope.path.parentPath.node.callee.name === 'module';
+          const moduleFunctionBlock = state.opts.moduleFunction.get('body');
+          const moduleFunctionBodyArray = moduleFunctionBlock.get('body');
+          const existingBeforeEach = getExistingBeforeEach(
+            moduleFunctionBodyArray,
+            t
+          );
 
-          const shouldDoTransform = hasBeforeEach || isFirstChildTestMethodCall;
-
-          if (shouldDoTransform) {
-            writeTestMetadataExpressions(state, babelPath, t, hasBeforeEach);
-            state.opts.beforeEachModified = true;
+          if (existingBeforeEach) {
+            insertMetaDataInBeforeEach(state, existingBeforeEach, t);
+          } else {
+            const lastSetupCall = getLastSetupCall(
+              moduleFunctionBodyArray,
+              t,
+              state.opts.hooksIdentifier
+            );
+            state.opts.setupCall = lastSetupCall;
+            insertNewBeforeEach(state, t);
           }
         }
       },
