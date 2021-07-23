@@ -1,6 +1,5 @@
 const path = require('path');
-// eslint-disable-next-line node/no-unpublished-require
-const getNodeProperty = require('../src/utils.js');
+const getNodeProperty = require('./utils.js');
 
 /**
  * Checks if the call expression matches a test setup call pattern.
