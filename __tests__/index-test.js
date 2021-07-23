@@ -125,6 +125,14 @@ pluginTester({
       ),
     },
     {
+      title: 'for a module that has no function passed in, skip it',
+      fixture: path.join(
+        __dirname,
+        '__fixtures__/',
+        'one-module-no-module-function-test.js'
+      ),
+    },
+    {
       title:
         'for a module with a beforeEach that is passed in an identifier (non-inline function), add our new beforeEach above theirs',
       fixture: path.join(
