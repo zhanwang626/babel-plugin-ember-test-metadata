@@ -9,9 +9,9 @@
     "name": "Glenn Cueto",
     "email": "gcueto@linkedin.com"
   },
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist/*.js"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
