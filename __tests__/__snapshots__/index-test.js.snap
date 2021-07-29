@@ -47,7 +47,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-one-beforeeach-import-exists-input-test.js';
@@ -130,7 +130,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(async function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-one-async-beforeeach-new-import-input-test.js';
@@ -179,7 +179,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-one-beforeeach-arg-not-inline-func-test.js';
@@ -228,7 +228,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (adsHooksV2) {
   setupApplicationTest(adsHooksV2);
   adsHooksV2.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-custom-hooks-name-test.js';
@@ -289,7 +289,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
   setupTwo(hooks);
   setupThree(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-multiple-setup-calls-test.js';
@@ -339,7 +339,7 @@ const SELECTORS = Object.freeze({
 });
 module('Acceptance | browse acceptance test', function (hooks) {
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-no-hooks-no-setup-test.js';
@@ -376,7 +376,7 @@ module('Unit | foo', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-no-hooks-test.js';
@@ -431,7 +431,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-one-beforeeach-new-import-input-test.js';
@@ -487,7 +487,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-test-member-input-test.js';
@@ -542,7 +542,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/one-module-no-beforeeach-import-exists-input-test.js';
@@ -620,7 +620,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/multiple-module-one-beforeeach-new-import-input-test.js';
@@ -638,7 +638,7 @@ module('Acceptance | search acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/multiple-module-one-beforeeach-new-import-input-test.js';
@@ -705,7 +705,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-input-test.js';
@@ -721,7 +721,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
 module('Acceptance | search acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-input-test.js';
@@ -795,7 +795,7 @@ module('Acceptance | browse acceptance test', function (hooks) {
     noop();
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/nested-modules-with-beforeeach-import-exists-input-test.js';
@@ -865,7 +865,7 @@ const SELECTORS = Object.freeze({
 module('Acceptance | browse acceptance test', function (hooks) {
   setupApplicationTest(hooks);
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(this);
+    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
 
     testMetadata.filePath =
       '__tests__/__fixtures__/nested-modules-no-beforeeach-import-exists-input-test.js';

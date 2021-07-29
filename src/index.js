@@ -160,7 +160,7 @@ function getTestMetadataAssignment(state, t) {
 function getTestMetadataDeclaration(state, t) {
   const getTestMetadataExpression = t.callExpression(
     t.identifier(state.opts.getTestMetadataUID.name),
-    [t.thisExpression()]
+    [t.identifier('QUnit.config.current.testEnvironment')]
   );
 
   return t.variableDeclaration('let', [
@@ -219,6 +219,8 @@ function addMetadata({ types: t }) {
         state.opts.setupCall;
         state.opts.moduleFunction;
         state.opts.hooksIdentifier;
+        state.opts.getTestMetadataUID =
+          babelPath.scope.generateUidIdentifier(GET_TEST_METADATA);
 
         let importDeclarations = babelPath
           .get('body')
@@ -226,9 +228,6 @@ function addMetadata({ types: t }) {
         let emberTestHelpersIndex = importDeclarations.findIndex(
           (n) => n.get('source').get('value').node === '@ember/test-helpers'
         );
-
-        state.opts.getTestMetadataUID =
-          babelPath.scope.generateUidIdentifier(GET_TEST_METADATA);
 
         const getTestMetaDataImportSpecifier = t.importSpecifier(
           state.opts.getTestMetadataUID,
@@ -256,7 +255,7 @@ function addMetadata({ types: t }) {
        *
        * The transformed beforeEach would look like:
           hooks.beforeEach(function () {
-            let testMetadata = getTestMetadata(this);
+            let testMetadata = getTestMetadata(<test context>);
             testMetadata.filePath = 'test/my-test.js';
           });
        * @param {object} babelPath
