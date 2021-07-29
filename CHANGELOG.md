@@ -1,3 +1,11 @@
+## v1.0.0-beta.6 (2021-07-29)
+
+#### :house: Internal
+* [#22](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/22) pass specific test context into getTestMetadata() instead of 'this' ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
 ## v1.0.0-beta.5 (2021-07-26)
 
 #### :house: Internal
