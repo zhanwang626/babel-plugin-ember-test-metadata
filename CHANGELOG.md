@@ -1,5 +1,18 @@
+## v1.0.0 (2021-08-03)
+
+#### :house: Internal
+* [#24](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/24) Add 'enabled' opt ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
 ## v1.0.0-beta.7 (2021-07-30)
 
+#### :house: Internal
+* [#23](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/23) Do not skip remaining transpilation ([@ckundo](https://github.com/ckundo))
+
+#### Committers: 1
+- Cameron Cundiff ([@ckundo](https://github.com/ckundo))
 
 ## v1.0.0-beta.6 (2021-07-29)
 
