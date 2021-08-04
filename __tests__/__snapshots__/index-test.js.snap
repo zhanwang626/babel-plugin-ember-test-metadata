@@ -1,889 +1,195 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`addMetadata for a module that already imports from @ember/test-helpers, it adds getTestMetadata to the import: for a module that already imports from @ember/test-helpers, it adds getTestMetadata to the import 1`] = `
+exports[`addMetadata for a module with hooks it adds getTestMetadata: for a module with hooks it adds getTestMetadata 1`] = `
 
 import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
+import { click } from '@ember/test-helpers';
 
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
+module('Acceptance | example test', function (hooks) {
   hooks.beforeEach(function () {
-    const myConst = 0;
-    noop();
-    // do some things here
+    // noop
   });
 
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true)
   });
 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
+import { click } from '@ember/test-helpers';
+module('Acceptance | example test', function (hooks) {
+  hooks.beforeEach(function () {
+    let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
+    testMetadata.filePath = '__tests__/__fixtures__/with-hooks-test.js';
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-one-beforeeach-import-exists-input-test.js';
-    const myConst = 0;
-    noop(); // do some things here
+    // noop
   });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true);
   });
 });
 
 
 `;
 
-exports[`addMetadata for a module that has no function passed in, skip it: for a module that has no function passed in, skip it 1`] = `
-
-import { module, test } from 'qunit';
-
-module('Unit | Utils | test one');
-
-test('should return proper things', function testGetDots(assert) {
-  assert.expect(1);
-
-  assert.equal('true', 'true', 'pass');
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-module('Unit | Utils | test one');
-test('should return proper things', function testGetDots(assert) {
-  assert.expect(1);
-  assert.equal('true', 'true', 'pass');
-});
-
-
-`;
-
-exports[`addMetadata for a module with a beforeEach that is passed an async function callback, getTestMetadata statements are adding correctly: for a module with a beforeEach that is passed an async function callback, getTestMetadata statements are adding correctly 1`] = `
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  });
-
-  hooks.beforeEach(async function () {
-    const myConst = 0;
-    await noop();
-    // do some things here
-  });
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
-  });
-  hooks.beforeEach(async function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-one-async-beforeeach-new-import-input-test.js';
-    const myConst = 0;
-    await noop(); // do some things here
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a module with a beforeEach that is passed in an identifier (non-inline function), add our new beforeEach above theirs: for a module with a beforeEach that is passed in an identifier (non-inline function), add our new beforeEach above theirs 1`] = `
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import { beforeEachSetup } from 'before-each-setup';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  hooks.beforeEach(beforeEachSetup);
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import { beforeEachSetup } from 'before-each-setup';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-one-beforeeach-arg-not-inline-func-test.js';
-  });
-  hooks.beforeEach(beforeEachSetup);
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a module without a beforeEach and where its function param passes in a custom hooks name, create our new beforeEach called from their custom hooks object: for a module without a beforeEach and where its function param passes in a custom hooks name, create our new beforeEach called from their custom hooks object 1`] = `
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (adsHooksV2) {
-  setupApplicationTest(adsHooksV2);
-
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (adsHooksV2) {
-  setupApplicationTest(adsHooksV2);
-  adsHooksV2.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-custom-hooks-name-test.js';
-  });
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a module without a beforeEach and with multiple setup calls, insert our new beforeEach after the setup calls: for a module without a beforeEach and with multiple setup calls, insert our new beforeEach after the setup calls 1`] = `
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import { visit } from '@ember/test-helpers';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  setupTwo(hooks);
-  setupThree(hooks);
-
-  const appVersion = '0.0.1';
-  this.nextItem = {
-    bookmark: {},
-    title: 'foo',
-  };
-
-  some.otherThing(function () {
-    noop();
-  });
-
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  setupTwo(hooks);
-  setupThree(hooks);
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-multiple-setup-calls-test.js';
-  });
-  const appVersion = '0.0.1';
-  this.nextItem = {
-    bookmark: {},
-    title: 'foo',
-  };
-  some.otherThing(function () {
-    noop();
-  });
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a module without any beforeEach and without any setup calls, it adds a new beforeEach at the top of the module: for a module without any beforeEach and without any setup calls, it adds a new beforeEach at the top of the module 1`] = `
-
-import { module, test } from 'qunit';
-import { visit } from '@ember/test-helpers';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function () {
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { module, test } from 'qunit';
-import {
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-no-hooks-no-setup-test.js';
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a module's function param that does not pass in hooks, pass in hooks: for a module's function param that does not pass in hooks, pass in hooks 1`] = `
-
-import { module, test } from 'qunit';
-
-module('Unit | foo', function () {
-  some.otherThing(function () {
-    noop();
-  });
-
-  test('foo', async function (assert) {
-    assert.equal('bar', 'bar');
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-module('Unit | foo', function (hooks) {
-  some.otherThing(function () {
-    noop();
-  });
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-no-hooks-test.js';
-  });
-  test('foo', async function (assert) {
-    assert.equal('bar', 'bar');
-  });
-});
-
-
-`;
-
-exports[`addMetadata for a single beforeEach in a single module, it adds a new import and getTestMetadata statements: for a single beforeEach in a single module, it adds a new import and getTestMetadata statements 1`] = `
+exports[`addMetadata for a module with no hooks it adds test metadata: for a module with no hooks it adds test metadata 1`] = `
 
 import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
+import { click } from '@ember/test-helpers';
 
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
+module('Acceptance | example test', function () {
   hooks.beforeEach(function () {
-    const myConst = 0;
-    noop();
-    // do some things here
+    // noop
   });
 
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true)
   });
 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
+import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
+import { click } from '@ember/test-helpers';
+module('Acceptance | example test', function (hooks) {
+  hooks.beforeEach(function () {
+    let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
+    testMetadata.filePath = '__tests__/__fixtures__/without-hooks-test.js';
   });
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-one-beforeeach-new-import-input-test.js';
-    const myConst = 0;
-    noop(); // do some things here
+    // noop
   });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true);
   });
 });
 
 
 `;
 
-exports[`addMetadata for a single module without any beforeEach and a memberExpression test call,
-       it adds a new beforeEach & getTestMetadata statements: for a single module without any beforeEach and a memberExpression test call,
-       it adds a new beforeEach & getTestMetadata statements 1`] = `
+exports[`addMetadata with existing metadata import it reuses the import: with existing metadata import it reuses the import 1`] = `
 
 import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
+import { click, getTestMetadata } from '@ember/test-helpers';
 
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
+module('Acceptance | example test', function (hooks) {
+  hooks.beforeEach(function () {
+    // noop
+  });
 
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true)
   });
 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
+import { click, getTestMetadata } from '@ember/test-helpers';
+module('Acceptance | example test', function (hooks) {
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
+    let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
     testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-test-member-input-test.js';
+      '__tests__/__fixtures__/with-get-test-metadata-test.js';
   });
-  some.otherThing(function () {
-    noop();
+  hooks.beforeEach(function () {
+    // noop
   });
-  test.only('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true);
   });
 });
 
 
 `;
 
-exports[`addMetadata for a single module without any beforeEach, it adds a new beforeEach & getTestMetadata statements: for a single module without any beforeEach, it adds a new beforeEach & getTestMetadata statements 1`] = `
+exports[`addMetadata with multiple sibling modules: with multiple sibling modules 1`] = `
 
 import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
+import { click } from '@ember/test-helpers';
 
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
+module('Acceptance | example test', function (hooks) {
+  hooks.beforeEach(function () {
+    // noop
+  });
+
+  test('example', async function (assert) {
+    click();
+    assert(true)
+  });
 });
 
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
+module('Acceptance | example test 2', function (hooks) {
+  hooks.beforeEach(function () {
+    // noop
+  });
 
-  some.otherThing(function () {
-    noop();
-  })
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true)
   });
 });
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
+import { click } from '@ember/test-helpers';
+module('Acceptance | example test', function (hooks) {
   hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
+    let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
     testMetadata.filePath =
-      '__tests__/__fixtures__/one-module-no-beforeeach-import-exists-input-test.js';
+      '__tests__/__fixtures__/with-multiple-modules-test.js';
   });
-  some.otherThing(function () {
-    noop();
+  hooks.beforeEach(function () {
+    // noop
   });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
+  test('example', async function (assert) {
+    click();
+    assert(true);
+  });
+});
+module('Acceptance | example test 2', function (hooks) {
+  hooks.beforeEach(function () {
+    let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
+    testMetadata.filePath =
+      '__tests__/__fixtures__/with-multiple-modules-test.js';
+  });
+  hooks.beforeEach(function () {
+    // noop
+  });
+  test('example', async function (assert) {
+    click();
+    assert(true);
   });
 });
 
 
 `;
 
-exports[`addMetadata for beforeEach in multiple modules, it adds a new import and multiple getTestMetadata statements: for beforeEach in multiple modules, it adds a new import and multiple getTestMetadata statements 1`] = `
+exports[`addMetadata with no module callback it does not add a beforeEach: with no module callback it does not add a beforeEach 1`] = `
 
-import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
+import {module} from 'qunit';
 
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
-  hooks.beforeEach(function () {
-    const myConst = 0;
-    noop();
-    // do some things here
-  });
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-module('Acceptance | search acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
-  hooks.beforeEach(function () {
-    const myConst = 0;
-    noop();
-    // do some things here
-  });
-
-  test('it renders search', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
+module('Acceptance | example test no module');
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { getTestMetadata as _getTestMetadata } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
-  });
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/multiple-module-one-beforeeach-new-import-input-test.js';
-    const myConst = 0;
-    noop(); // do some things here
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-module('Acceptance | search acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
-  });
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/multiple-module-one-beforeeach-new-import-input-test.js';
-    const myConst = 0;
-    noop(); // do some things here
-  });
-  test('it renders search', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for multiple sibling modules without any beforeEach, it adds a new beforeEach & getTestMetadata statements: for multiple sibling modules without any beforeEach, it adds a new beforeEach & getTestMetadata statements 1`] = `
-
-import { click, visit } from '@ember/test-helpers';
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  });
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-module('Acceptance | search acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  });
-
-  test('it renders search', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-input-test.js';
-  });
-  some.otherThing(function () {
-    noop();
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-module('Acceptance | search acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/multiple-module-no-beforeeach-import-exists-input-test.js';
-  });
-  some.otherThing(function () {
-    noop();
-  });
-  test('it renders search', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for nested modules with beforeEach, it adds a new beforeEach before only the first nested module call: for nested modules with beforeEach, it adds a new beforeEach before only the first nested module call 1`] = `
-
-import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
-  hooks.beforeEach(function () {
-    const myConst = 0;
-    noop();
-    // do some things here
-  });
-
-  module('nested module', () => {
-    beforeEach(() => {
-      // nested beforeEach should be left untouched
-    })
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
-  });
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  some.otherThing(function () {
-    noop();
-  });
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/nested-modules-with-beforeeach-import-exists-input-test.js';
-    const myConst = 0;
-    noop(); // do some things here
-  });
-  module('nested module', () => {
-    beforeEach(() => {
-      // nested beforeEach should be left untouched
-    });
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-
-`;
-
-exports[`addMetadata for nested modules without any beforeEach, it adds a new beforeEach before the first nested module call: for nested modules without any beforeEach, it adds a new beforeEach before the first nested module call 1`] = `
-
-import {module, test} from 'qunit';
-import {setupApplicationTest} from 'ember-qunit';
-import { click, visit } from '@ember/test-helpers';
-
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-
-  some.otherThing(function () {
-    noop();
-  })
-
-  module('nested module', () => {
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
-  });
-
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
-
-      ↓ ↓ ↓ ↓ ↓ ↓
-
-import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
-import {
-  click,
-  visit,
-  getTestMetadata as _getTestMetadata,
-} from '@ember/test-helpers';
-const SELECTORS = Object.freeze({
-  MOCK_SELECTOR: '[data-test-nav-bar-browse]',
-});
-module('Acceptance | browse acceptance test', function (hooks) {
-  setupApplicationTest(hooks);
-  hooks.beforeEach(function () {
-    let testMetadata = _getTestMetadata(QUnit.config.current.testEnvironment);
-
-    testMetadata.filePath =
-      '__tests__/__fixtures__/nested-modules-no-beforeeach-import-exists-input-test.js';
-  });
-  some.otherThing(function () {
-    noop();
-  });
-  module('nested module', () => {
-    test('a test', () => {});
-    module('nested module', () => {
-      test('a test', () => {});
-    });
-  });
-  test('it renders browse page', async function (assert) {
-    await visit(BROWSE_URL);
-    assert.dom(SELECTORS.MOCK_SELECTOR).exists();
-  });
-});
+import { getTestMetadata } from '@ember/test-helpers';
+import { module } from 'qunit';
+module('Acceptance | example test no module');
 
 
 `;
