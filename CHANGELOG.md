@@ -1,3 +1,12 @@
+## v1.2.0 (2021-08-04)
+
+#### :bug: Bug Fix
+* [#26](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/26) Revisit state options and simplify features ([@ckundo](https://github.com/ckundo))
+
+#### Committers: 1
+- Cameron Cundiff ([@ckundo](https://github.com/ckundo))
+
+
 ## v1.1.0 (2021-08-04)
 
 #### :bug: Bug Fix
