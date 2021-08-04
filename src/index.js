@@ -74,8 +74,8 @@ function addMetadata({ types: t }) {
           !state.opts.shouldLoadFile ||
           !babelPath.get('callee').isIdentifier({ name: 'module' }) ||
           babelPath.parentPath.parent.type !== 'Program') {
-          return
-        };
+          return;
+        }
 
         let moduleName;
         let moduleFunction;
