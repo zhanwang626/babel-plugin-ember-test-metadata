@@ -35,6 +35,15 @@ function addMetadata({ types: t }) {
 
         if (!state.opts.shouldLoadFile) return;
 
+        const metadata = babelPath.get('body')
+          .filter((n) => n.type === 'ImportDeclaration')
+          .find(n => {
+            return n.get('specifiers').some(s => s.get('container').container.imported.name === "getTestMetadata");
+          });
+
+
+        if (metadata) { return; }
+
         const identifier = t.identifier('getTestMetadata');
         const importSpecifier = t.importSpecifier(identifier, identifier);
 
@@ -60,18 +69,22 @@ function addMetadata({ types: t }) {
        * @param {object} state
        */
       CallExpression(babelPath, state) {
-        if (!state.opts.enabled) return;
-        if (!state.opts.shouldLoadFile) return;
-        if (!babelPath.get('callee').isIdentifier({ name: 'module' })) return;
-        if (babelPath.parentPath.parent.type !== 'Program') return;
+        if (
+          !state.opts.enabled ||
+          !state.opts.shouldLoadFile ||
+          !babelPath.get('callee').isIdentifier({ name: 'module' }) ||
+          babelPath.parentPath.parent.type !== 'Program') {
+          return
+        };
 
         let moduleName;
         let moduleFunction;
 
         [moduleName, moduleFunction] = babelPath.get('arguments');
 
-        if (!moduleName || !moduleFunction || !t.isFunction(moduleFunction))
+        if (!moduleName || !moduleFunction || !t.isFunction(moduleFunction)) {
           return;
+        }
 
         let hooksIdentifier = getNodeProperty(
           moduleFunction.get('params')[0],

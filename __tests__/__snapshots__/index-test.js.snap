@@ -94,7 +94,6 @@ module('Acceptance | example test', function (hooks) {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { getTestMetadata } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { click, getTestMetadata } from '@ember/test-helpers';
 module('Acceptance | example test', function (hooks) {
