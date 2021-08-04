@@ -1,3 +1,12 @@
+## v1.1.0 (2021-08-04)
+
+#### :bug: Bug Fix
+* [#25](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/25) move env check to index ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
+
 ## v1.0.0 (2021-08-03)
 
 #### :rocket: Enhancement
