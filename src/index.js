@@ -35,14 +35,24 @@ function addMetadata({ types: t }) {
 
         if (!state.opts.shouldLoadFile) return;
 
-        const metadata = babelPath.get('body')
+        const metadata = babelPath
+          .get('body')
           .filter((n) => n.type === 'ImportDeclaration')
-          .find(n => {
-            return n.get('specifiers').some(s => s.get('container').container.imported.name === "getTestMetadata");
+          .find((n) => {
+            return n
+              .get('specifiers')
+              .some(
+                (s) =>
+                  getNodeProperty(
+                    s.get('container'),
+                    'container.imported.name'
+                  ) === 'getTestMetadata'
+              );
           });
 
-
-        if (metadata) { return; }
+        if (metadata) {
+          return;
+        }
 
         const identifier = t.identifier('getTestMetadata');
         const importSpecifier = t.importSpecifier(identifier, identifier);
@@ -73,7 +83,8 @@ function addMetadata({ types: t }) {
           !state.opts.enabled ||
           !state.opts.shouldLoadFile ||
           !babelPath.get('callee').isIdentifier({ name: 'module' }) ||
-          babelPath.parentPath.parent.type !== 'Program') {
+          babelPath.parentPath.parent.type !== 'Program'
+        ) {
           return;
         }
 
