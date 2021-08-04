@@ -14,7 +14,7 @@ function shouldLoadFile(filename) {
  * Babel plugin for Ember apps that adds the filepath of the test file that Babel is processing, to
  * the testMetadata. It does this by making the following transformations to the test file:
  * 1. imports "getTestMetadata" from @ember/test-helpers
- * 2. adds a new beforeEach or transforms any existing beforeEach to include testMetadata expressions that add
+ * 2. adds a new beforeEach that includes testMetadata expressions that add
  *   filepath to testMetadata
  * @param {object} Babel object
  * @returns Babel plugin object with Program and CallExpression visitors
@@ -36,11 +36,7 @@ function addMetadata({ types: t }) {
         if (!state.opts.shouldLoadFile) return;
 
         const identifier = t.identifier('getTestMetadata');
-
-        const importSpecifier = t.importSpecifier(
-          identifier,
-          identifier
-        );
+        const importSpecifier = t.importSpecifier(identifier, identifier);
 
         babelPath.unshiftContainer(
           'body',
