@@ -1,3 +1,15 @@
+## v1.2.1 (2021-08-05)
+
+#### :memo: Documentation
+* [#27](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/27) remove BABEL_TEST_METADATA early return check in index ([@glnster](https://github.com/glnster))
+
+#### :house: Internal
+* [#27](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/27) remove BABEL_TEST_METADATA early return check in index ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
+
 ## v1.2.0 (2021-08-04)
 
 #### :bug: Bug Fix
