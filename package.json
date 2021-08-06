@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run build",
     "prebuild": "rm -rf dist",
     "build": "babel src --out-dir dist --copy-files --ignore **/*.test.js",
-    "lint": "eslint . --ext js,ts --cache",
+    "lint": "eslint .",
     "postbuild": "rm -rf dist/**/*.test.js",
     "test": "yarn lint && BABEL_TEST_METADATA=true yarn test:jest",
     "test:jest": "jest"
