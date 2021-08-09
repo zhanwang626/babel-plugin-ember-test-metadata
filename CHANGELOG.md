@@ -1,3 +1,12 @@
+## v1.2.2 (2021-08-09)
+
+#### :house: Internal
+* [#28](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/28) Cleanup of file casing, incorrect configs ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 1
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
 ## v1.2.1 (2021-08-05)
 
 #### :memo: Documentation
