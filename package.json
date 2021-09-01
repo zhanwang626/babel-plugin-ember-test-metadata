@@ -19,7 +19,7 @@
     "build": "babel src --out-dir dist --copy-files --ignore **/*.test.js",
     "lint": "eslint .",
     "postbuild": "rm -rf dist/**/*.test.js",
-    "test": "yarn lint && BABEL_TEST_METADATA=true yarn test:jest",
+    "test": "yarn lint && yarn test:jest",
     "test:jest": "jest"
   },
   "husky": {
@@ -41,6 +41,7 @@
     "collectCoverageFrom": [
       "src/**/*.js"
     ],
+    "setupFilesAfterEnv": ["./jest.setup.js"],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.js$": "babel-jest"
