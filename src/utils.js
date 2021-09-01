@@ -1,3 +1,5 @@
+const path = require('path');
+
 /**
  * Utility to get a property from a given path
  * @param {object} node
@@ -30,4 +32,27 @@ function getNodeProperty(node, path) {
   return property;
 }
 
-module.exports = getNodeProperty;
+/**
+ * Get a normalized file path. If Embroider prefix is present, strip it out
+ * @param {object} fileOpts Babel state.file.opts which include root and filename props
+ * @returns {string} E.g. tests/acceptance/my-test.js
+ */
+function getNormalizedFilePath(fileOpts) {
+  let { root, filename } = fileOpts;
+  const tokens = filename.split(path.sep);
+  const EMBROIDER = 'embroider';
+
+  if (tokens.includes(EMBROIDER)) {
+    const RELATIVE_PATH_ROOT = 2;
+
+    tokens.splice(0, tokens.lastIndexOf(EMBROIDER) + RELATIVE_PATH_ROOT);
+  }
+  filename = tokens.join(path.sep);
+
+  return path.relative(root, filename);
+}
+
+module.exports = {
+  getNodeProperty,
+  getNormalizedFilePath,
+};

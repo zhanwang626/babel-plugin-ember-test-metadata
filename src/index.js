@@ -1,5 +1,4 @@
-const path = require('path');
-const getNodeProperty = require('./utils.js');
+const { getNodeProperty, getNormalizedFilePath } = require('./utils.js');
 
 /**
  * Checks for files ending with "-test.js" or "_test.js"
@@ -112,8 +111,7 @@ function addMetadata({ types: t }) {
           ),
         ]);
 
-        const { root, filename } = state.file.opts;
-        const relativeFilePath = path.relative(root, filename);
+        const relativeFilePath = getNormalizedFilePath(state.file.opts);
 
         const testMetadataAssignment = t.expressionStatement(
           t.assignmentExpression(
