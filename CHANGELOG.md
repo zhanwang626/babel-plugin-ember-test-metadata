@@ -1,3 +1,12 @@
+## v1.2.3 (2021-09-01)
+
+#### :rocket: Enhancement
+* [#29](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/29) Support embroider file path references ([@glnster](https://github.com/glnster))
+
+#### Committers: 1
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+
+
 ## v1.2.2 (2021-08-09)
 
 #### :house: Internal
