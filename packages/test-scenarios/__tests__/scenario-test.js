@@ -83,13 +83,6 @@ module.exports = function (defaults) {
   });
 }
 
-function supportMatrix(scenarios) {
-  return scenarios.expand({
-    classic,
-    embroider,
-  });
-}
-
 function baseApp() {
   return Project.fromDir(
     // eslint-disable-next-line node/no-unpublished-require
@@ -100,7 +93,11 @@ function baseApp() {
   );
 }
 
-supportMatrix(Scenarios.fromProject(baseApp))
+Scenarios.fromProject(baseApp)
+  .expand({
+    classic,
+    embroider,
+  })
   .map('app scenarios', (project) => {
     merge(project.files, {
       tests: {
@@ -114,7 +111,7 @@ module('Acceptance | with-hooks-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-hooks-test.js');
+    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-hooks-test.js'));
   });
 });
 `,
@@ -127,7 +124,7 @@ module('Acceptance | without-hooks-test', function () {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/without-hooks-test.js');
+    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/without-hooks-test.js'));
   });
 });
 `,
@@ -140,7 +137,7 @@ module('Acceptance | with-multiple-modules-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-multiple-modules-test.js');
+    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
   });
 });
 
@@ -150,7 +147,7 @@ module('Acceptance | with-multiple-modules-test 2', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-multiple-modules-test.js');
+    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
   });
 });
 `,
