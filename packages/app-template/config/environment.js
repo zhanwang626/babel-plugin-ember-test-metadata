@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   let ENV = {
-    modulePrefix: 'app-template',
+    modulePrefix: '@babel-plugin-ember-test-metadata/app-template',
     environment,
     rootURL: '/',
     locationType: 'auto',

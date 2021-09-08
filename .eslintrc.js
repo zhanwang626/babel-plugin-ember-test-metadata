@@ -13,7 +13,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['packages/babel-plugin-ember-test-metadata/__tests__/**/*.js'],
+      files: ['packages/**/__tests__/**/*.js'],
       env: {
         jest: true,
       },

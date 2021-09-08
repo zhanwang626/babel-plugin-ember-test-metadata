@@ -12,7 +12,8 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "test": "yarn lint && yarn workspaces run test"
+    "test": "yarn lint && yarn workspaces run test",
+    "test:scenarios": "cd packages/test-scenarios && yarn test"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

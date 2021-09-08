@@ -1,5 +1,5 @@
 {
-  "name": "app-template",
+  "name": "@babel-plugin-ember-test-metadata/app-template",
   "version": "0.0.0",
   "private": true,
   "description": "Small description for app-template goes here",
@@ -18,9 +18,9 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "start": "ember serve",
+    "start": "node ./node_modules/ember-cli/bin/ember serve",
     "test": "npm-run-all lint test:*",
-    "test:ember": "ember test"
+    "test:ember": "node ./node_modules/ember-cli/bin/ember test"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
@@ -66,5 +66,9 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "volta": {
+    "node": "12.22.1",
+    "yarn": "1.22.10"
   }
 }
