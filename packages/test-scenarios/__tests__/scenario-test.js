@@ -45,12 +45,48 @@ module.exports = function (defaults) {
   });
 }
 
-// async function embroider(project) {}
+async function embroider(project) {
+  project.linkDependency('@embroider/core', {
+    baseDir: __dirname,
+  });
+  project.linkDependency('@embroider/compat', {
+    baseDir: __dirname,
+  });
+  project.linkDependency('@embroider/webpack', {
+    baseDir: __dirname,
+  });
+  project.linkDependency('webpack', {
+    baseDir: __dirname,
+  });
+
+  merge(project.files, {
+    'ember-cli-build.js': `'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          '${babelPluginPath}',
+          { enabled: true }
+        ]
+      ],
+    }
+  });
+
+  const { Webpack } = require('@embroider/webpack');
+  return require('@embroider/compat').compatBuild(app, Webpack);
+};
+`,
+  });
+}
 
 function supportMatrix(scenarios) {
   return scenarios.expand({
     classic,
-    // embroider,
+    embroider,
   });
 }
 

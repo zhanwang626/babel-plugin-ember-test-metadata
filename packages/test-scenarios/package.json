@@ -8,7 +8,11 @@
     "scenario-tester": "^1.0.2"
   },
   "devDependencies": {
-    "@babel-plugin-ember-test-metadata/app-template": "*"
+    "@babel-plugin-ember-test-metadata/app-template": "*",
+    "@embroider/compat": "^0.44.1",
+    "@embroider/core": "^0.44.1",
+    "@embroider/webpack": "^0.44.1",
+    "webpack": "^5.52.0"
   },
   "scripts": {
     "test": "jest --runInBand"
