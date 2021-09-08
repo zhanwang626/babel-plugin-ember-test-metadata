@@ -3,15 +3,15 @@ module.exports = {
     browser: false,
     node: true,
   },
-  plugins: ['node', 'prettier'],
-  extends: ['eslint:recommended', 'plugin:node/recommended', 'prettier'],
+  plugins: ["node", "prettier"],
+  extends: ["eslint:recommended", "plugin:node/recommended", "prettier"],
   parserOptions: {
     ecmaVersion: 2019,
-    sourceType: 'module',
+    sourceType: "module",
   },
   overrides: [
     {
-      files: ['__tests__/**/*.js'],
+      files: ["packages/babel-plugin-ember-test-metadata/__tests__/**/*.js"],
       env: {
         jest: true,
       },
