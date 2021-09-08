@@ -1,7 +1,9 @@
 module.exports = {
+  root: true,
   env: {
     browser: false,
     node: true,
+    es6: true,
   },
   plugins: ['node', 'prettier'],
   extends: ['eslint:recommended', 'plugin:node/recommended', 'prettier'],
@@ -11,7 +13,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['__tests__/**/*.js'],
+      files: ['packages/babel-plugin-ember-test-metadata/__tests__/**/*.js'],
       env: {
         jest: true,
       },
