@@ -18,10 +18,10 @@ jest.setTimeout(500000);
   process.env['PATH'] = paths.join(delimiter);
 })();
 
-async function classic(project) {
-  // eslint-disable-next-line node/no-unpublished-require
-  let babelPluginPath = require.resolve('../../babel-plugin-ember-test-metadata/dist/index');
+// eslint-disable-next-line node/no-unpublished-require
+const babelPluginPath = require.resolve('../../babel-plugin-ember-test-metadata/dist/index');
 
+async function classic(project) {
   merge(project.files, {
     'ember-cli-build.js': `'use strict';
 
