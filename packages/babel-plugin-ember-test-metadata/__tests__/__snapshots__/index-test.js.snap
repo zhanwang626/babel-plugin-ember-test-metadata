@@ -136,8 +136,7 @@ import { click, getTestMetadata } from '@ember/test-helpers';
 module('Acceptance | example test', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
-    testMetadata.filePath =
-      '__tests__/__fixtures__/with-get-test-metadata-test.js';
+    testMetadata.filePath = '__tests__/__fixtures__/with-get-test-metadata-test.js';
   });
   hooks.beforeEach(function () {
     // noop
@@ -186,8 +185,7 @@ import { click } from '@ember/test-helpers';
 module('Acceptance | example test', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
-    testMetadata.filePath =
-      '__tests__/__fixtures__/with-multiple-modules-test.js';
+    testMetadata.filePath = '__tests__/__fixtures__/with-multiple-modules-test.js';
   });
   hooks.beforeEach(function () {
     // noop
@@ -200,8 +198,7 @@ module('Acceptance | example test', function (hooks) {
 module('Acceptance | example test 2', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
-    testMetadata.filePath =
-      '__tests__/__fixtures__/with-multiple-modules-test.js';
+    testMetadata.filePath = '__tests__/__fixtures__/with-multiple-modules-test.js';
   });
   hooks.beforeEach(function () {
     // noop
