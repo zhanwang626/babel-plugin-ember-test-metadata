@@ -56,6 +56,7 @@ function supportMatrix(scenarios) {
 
 function baseApp() {
   return Project.fromDir(
+    // eslint-disable-next-line node/no-unpublished-require
     dirname(require.resolve('@babel-plugin-ember-test-metadata/app-template/package.json')),
     {
       linkDeps: true,
@@ -69,15 +70,51 @@ supportMatrix(Scenarios.fromProject(baseApp))
       tests: {
         unit: {
           'with-hooks-test.js': `import { module, test } from 'qunit';
-import { click, getTestMetadata } from '@ember/test-helpers';
+import { getTestMetadata } from '@ember/test-helpers';
 
-module('Acceptance | example test', function (hooks) {
+module('Acceptance | with-hooks-test', function (hooks) {
   hooks.beforeEach(function () {
     // noop
   });
 
   test('example', async function (assert) {
     assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-hooks-test.js');
+  });
+});
+`,
+          'without-hooks-test.js': `import { module, test } from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | without-hooks-test', function () {
+  hooks.beforeEach(function () {
+    // noop
+  });
+
+  test('example', async function (assert) {
+    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/without-hooks-test.js');
+  });
+});
+`,
+          'with-multiple-modules-test.js': `import {module, test} from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | with-multiple-modules-test', function (hooks) {
+  hooks.beforeEach(function () {
+    // noop
+  });
+
+  test('example', async function (assert) {
+    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-multiple-modules-test.js');
+  });
+});
+
+module('Acceptance | with-multiple-modules-test 2', function (hooks) {
+  hooks.beforeEach(function () {
+    // noop
+  });
+
+  test('example', async function (assert) {
+    assert.equal(getTestMetadata(this).filePath, '@babel-plugin-ember-test-metadata/app-template/tests/unit/with-multiple-modules-test.js');
   });
 });
 `,
@@ -97,8 +134,8 @@ module('Acceptance | example test', function (hooks) {
         let result = await app.execute('yarn test:ember');
 
         expect(result.exitCode).toEqual(0);
-        expect(result.output).toMatch('# tests 2');
-        expect(result.output).toMatch('# pass  2');
+        expect(result.output).toMatch('# tests 5');
+        expect(result.output).toMatch('# pass  5');
       });
     });
   });
