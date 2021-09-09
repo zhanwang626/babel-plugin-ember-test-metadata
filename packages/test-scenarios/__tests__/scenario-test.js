@@ -4,9 +4,6 @@ const { merge } = require('lodash');
 
 jest.setTimeout(500000);
 
-// eslint-disable-next-line node/no-unpublished-require
-const babelPluginPath = require.resolve('../../babel-plugin-ember-test-metadata/dist/index');
-
 async function classic(project) {
   merge(project.files, {
     'ember-cli-build.js': `'use strict';
@@ -18,7 +15,7 @@ module.exports = function (defaults) {
     babel: {
       plugins: [
         [
-          '${babelPluginPath}',
+          require.resolve('babel-plugin-ember-test-metadata'),
           { enabled: true }
         ]
       ],
@@ -55,7 +52,7 @@ module.exports = function (defaults) {
     babel: {
       plugins: [
         [
-          '${babelPluginPath}',
+          require.resolve('babel-plugin-ember-test-metadata'),
           { enabled: true }
         ]
       ],
@@ -85,6 +82,10 @@ Scenarios.fromProject(baseApp)
     embroider,
   })
   .map('app scenarios', (project) => {
+    project.linkDependency('babel-plugin-ember-test-metadata', {
+      baseDir: __dirname,
+    });
+
     merge(project.files, {
       tests: {
         unit: {

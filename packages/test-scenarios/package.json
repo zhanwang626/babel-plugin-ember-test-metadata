@@ -12,6 +12,7 @@
     "@embroider/compat": "^0.44.1",
     "@embroider/core": "^0.44.1",
     "@embroider/webpack": "^0.44.1",
+    "babel-plugin-ember-test-metadata": "*",
     "webpack": "^5.52.0"
   },
   "scripts": {
