@@ -13,10 +13,17 @@
     "@embroider/core": "^0.44.1",
     "@embroider/webpack": "^0.44.1",
     "babel-plugin-ember-test-metadata": "*",
+    "ember-add-in-repo-tests": "^1.0.3",
     "webpack": "^5.52.0"
   },
   "scripts": {
     "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/__fixtures__/"
+    ]
   },
   "volta": {
     "extends": "../../package.json"

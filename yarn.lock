@@ -6589,6 +6589,15 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
+ember-add-in-repo-tests@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ember-add-in-repo-tests/-/ember-add-in-repo-tests-1.0.3.tgz#56ddd352e71274b8c8fd2023d4c5a44b6d716ce8"
+  integrity sha512-x25N5hianfWUxs/xf2jQ3loRVZNB3lMZYZGlAus8I5XmG3Huk0RMIpe0odl3cHxisUstCo1MLn3mVB/A2XQnVw==
+  dependencies:
+    broccoli-funnel "^2.0.1"
+    broccoli-merge-trees "^2.0.0"
+    broccoli-source "^1.1.0"
+
 ember-auto-import@^1.10.1, ember-auto-import@^1.11.3:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-1.12.0.tgz#52246b04891090e2608244e65c4c6af7710df12b"
