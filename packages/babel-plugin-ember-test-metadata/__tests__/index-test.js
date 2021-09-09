@@ -1,5 +1,5 @@
 const pluginTester = require('babel-plugin-tester').default;
-const addMetadata = require('../src/index');
+const addMetadata = require('../index');
 const path = require('path');
 
 pluginTester({
@@ -18,27 +18,15 @@ pluginTester({
     },
     {
       title: 'with existing metadata import it reuses the import',
-      fixture: path.join(
-        __dirname,
-        '__fixtures__',
-        'with-get-test-metadata-test.js'
-      ),
+      fixture: path.join(__dirname, '__fixtures__', 'with-get-test-metadata-test.js'),
     },
     {
       title: 'with multiple sibling modules',
-      fixture: path.join(
-        __dirname,
-        '__fixtures__',
-        'with-multiple-modules-test.js'
-      ),
+      fixture: path.join(__dirname, '__fixtures__', 'with-multiple-modules-test.js'),
     },
     {
       title: 'with no module callback it does not add a beforeEach',
-      fixture: path.join(
-        __dirname,
-        '__fixtures__',
-        'with-no-module-callback-test.js'
-      ),
+      fixture: path.join(__dirname, '__fixtures__', 'with-no-module-callback-test.js'),
     },
     {
       title: 'Embroider build path',
