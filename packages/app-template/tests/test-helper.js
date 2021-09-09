@@ -1,5 +1,5 @@
-import Application from 'app-template/app';
-import config from 'app-template/config/environment';
+import Application from '@babel-plugin-ember-test-metadata/app-template/app';
+import config from '@babel-plugin-ember-test-metadata/app-template/config/environment';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';

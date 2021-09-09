@@ -26,5 +26,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: install dependencies
         run: yarn install
+      - name: Build
+        run: yarn workspace babel-plugin-ember-test-metadata build
       - name: test
         run: yarn test

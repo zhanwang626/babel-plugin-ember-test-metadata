@@ -1,0 +1,24 @@
+{
+  "name": "@babel-plugin-ember-test-metadata/test-scenarios",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "jest": "^27.1.1",
+    "lodash": "^4.17.21",
+    "scenario-tester": "^1.0.2"
+  },
+  "devDependencies": {
+    "@babel-plugin-ember-test-metadata/app-template": "*",
+    "@embroider/compat": "^0.44.1",
+    "@embroider/core": "^0.44.1",
+    "@embroider/webpack": "^0.44.1",
+    "babel-plugin-ember-test-metadata": "*",
+    "webpack": "^5.52.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}
