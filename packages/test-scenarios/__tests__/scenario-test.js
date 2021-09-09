@@ -1,22 +1,8 @@
 const { Scenarios, Project } = require('scenario-tester');
-const { dirname, delimiter } = require('path');
+const { dirname } = require('path');
 const { merge } = require('lodash');
 
 jest.setTimeout(500000);
-
-// https://github.com/volta-cli/volta/issues/702
-// We need this because we're launching node in child processes and we want
-// those children to respect volta config per project.
-(function restoreVoltaEnvironment() {
-  let voltaHome = process.env['VOLTA_HOME'];
-  if (!voltaHome) return;
-  let paths = process.env['PATH'].split(delimiter);
-  while (/\.volta/.test(paths[0])) {
-    paths.shift();
-  }
-  paths.unshift(`${voltaHome}/bin`);
-  process.env['PATH'] = paths.join(delimiter);
-})();
 
 // eslint-disable-next-line node/no-unpublished-require
 const babelPluginPath = require.resolve('../../babel-plugin-ember-test-metadata/dist/index');
@@ -159,16 +145,16 @@ module('Acceptance | with-multiple-modules-test 2', function (hooks) {
     describe(scenario.name, () => {
       let app;
 
-      beforeEach(async () => {
+      beforeAll(async () => {
         app = await scenario.prepare();
       });
 
       it('runs tests', async () => {
-        let result = await app.execute('yarn test:ember');
+        let result = await app.execute('node ./node_modules/ember-cli/bin/ember test');
 
-        expect(result.exitCode).toEqual(0);
         expect(result.output).toMatch('# tests 5');
         expect(result.output).toMatch('# pass  5');
+        expect(result.exitCode).toEqual(0);
       });
     });
   });

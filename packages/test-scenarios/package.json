@@ -15,10 +15,9 @@
     "webpack": "^5.52.0"
   },
   "scripts": {
-    "test": "jest --runInBand"
+    "test": "jest"
   },
   "volta": {
-    "node": "12.22.1",
-    "yarn": "1.22.10"
+    "extends": "../../package.json"
   }
 }
