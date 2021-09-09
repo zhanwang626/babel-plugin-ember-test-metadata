@@ -1,5 +1,5 @@
 const path = require('path');
-const { getNodeProperty, getNormalizedFilePath } = require('../src/utils');
+const { getNodeProperty, getNormalizedFilePath } = require('../utils');
 
 describe('Unit | utils | getNodeProperty', () => {
   it('returns property as expected', () => {
@@ -69,9 +69,9 @@ describe('Unit | utils | getNormalizedFilePath', () => {
     expect(getNormalizedFilePath(fileOpts.embroiderBuildPath)).toBe(
       path.join('tests', 'acceptance', 'my-test.js')
     );
-    expect(
-      getNormalizedFilePath(fileOpts.embroiderBuildPathTwoEmbroiderTokens)
-    ).toBe(path.join('tests', 'acceptance', 'my-test.js'));
+    expect(getNormalizedFilePath(fileOpts.embroiderBuildPathTwoEmbroiderTokens)).toBe(
+      path.join('tests', 'acceptance', 'my-test.js')
+    );
   });
 
   it('returns unmodified file path when path does not include "embroider" as a segment', () => {
