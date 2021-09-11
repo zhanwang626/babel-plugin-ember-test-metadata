@@ -14,6 +14,59 @@ function createTmpDir() {
 
 async function classic(project) {
   merge(project.files, {
+    tests: {
+      unit: {
+        'with-hooks-test.js': `import { module, test } from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | with-hooks-test', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-hooks-test.js'));
+});
+});
+`,
+        'without-hooks-test.js': `import { module, test } from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | without-hooks-test', function () {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.ok(getTestMetadata(this).filePath.includes('tests/unit/without-hooks-test.js'));
+});
+});
+`,
+        'with-multiple-modules-test.js': `import {module, test} from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | with-multiple-modules-test', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
+});
+});
+
+module('Acceptance | with-multiple-modules-test 2', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
+});
+});
+`,
+      },
+    },
     'ember-cli-build.js': `'use strict';
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 module.exports = function (defaults) {
@@ -48,6 +101,59 @@ async function embroider(project) {
   });
 
   merge(project.files, {
+    tests: {
+      unit: {
+        'with-hooks-test.js': `import { module, test } from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | with-hooks-test', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-test.js');
+});
+});
+`,
+        'without-hooks-test.js': `import { module, test } from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | without-hooks-test', function () {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.equal(getTestMetadata(this).filePath, 'tests/unit/without-hooks-test.js');
+});
+});
+`,
+        'with-multiple-modules-test.js': `import {module, test} from 'qunit';
+import { getTestMetadata } from '@ember/test-helpers';
+
+module('Acceptance | with-multiple-modules-test', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-multiple-modules-test.js');
+});
+});
+
+module('Acceptance | with-multiple-modules-test 2', function (hooks) {
+hooks.beforeEach(function () {
+  // noop
+});
+
+test('example', async function (assert) {
+  assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-multiple-modules-test.js');
+});
+});
+`,
+      },
+    },
     'ember-cli-build.js': `'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -89,62 +195,6 @@ Scenarios.fromProject(baseApp)
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {
       baseDir: __dirname,
-    });
-
-    merge(project.files, {
-      tests: {
-        unit: {
-          'with-hooks-test.js': `import { module, test } from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | with-hooks-test', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-test.js');
-  });
-});
-`,
-          'without-hooks-test.js': `import { module, test } from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | without-hooks-test', function () {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/without-hooks-test.js'));
-  });
-});
-`,
-          'with-multiple-modules-test.js': `import {module, test} from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | with-multiple-modules-test', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
-  });
-});
-
-module('Acceptance | with-multiple-modules-test 2', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
-  });
-});
-`,
-        },
-      },
     });
   })
   .forEachScenario((scenario) => {
