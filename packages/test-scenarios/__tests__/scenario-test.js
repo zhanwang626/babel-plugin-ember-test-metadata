@@ -1,15 +1,21 @@
 const { Scenarios, Project } = require('scenario-tester');
-const { dirname } = require('path');
+const { dirname, join } = require('path');
 const { merge } = require('lodash');
+const { realpathSync } = require('fs-extra');
+const tmp = require('tmp');
 
 jest.setTimeout(500000);
+
+const rootTmpDir = createTmpDir();
+
+function createTmpDir() {
+  return realpathSync(tmp.dirSync({ unsafeCleanup: true }).name);
+}
 
 async function classic(project) {
   merge(project.files, {
     'ember-cli-build.js': `'use strict';
-
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     babel: {
@@ -21,7 +27,6 @@ module.exports = function (defaults) {
       ],
     }
   });
-
   return app.toTree();
 };
 `,
@@ -98,7 +103,7 @@ module('Acceptance | with-hooks-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-hooks-test.js'));
+    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-test.js');
   });
 });
 `,
@@ -144,10 +149,17 @@ module('Acceptance | with-multiple-modules-test 2', function (hooks) {
   })
   .forEachScenario((scenario) => {
     describe(scenario.name, () => {
+      const EMBROIDER = 'embroider';
+      const EMBROIDER_PATH_SEGMENT = '999999';
       let app;
+      let appTmp;
 
       beforeAll(async () => {
-        app = await scenario.prepare();
+        if (scenario.name.includes('embroider-app')) {
+          appTmp = join(rootTmpDir, EMBROIDER, EMBROIDER_PATH_SEGMENT);
+        }
+
+        app = await scenario.prepare(appTmp);
       });
 
       it('runs tests', async () => {
