@@ -1,5 +1,6 @@
 const { Scenarios, Project } = require('scenario-tester');
-const { dirname } = require('path');
+const { dirname, join } = require('path');
+const { readFileSync } = require('fs');
 const { merge } = require('lodash');
 
 jest.setTimeout(500000);
@@ -26,6 +27,11 @@ module.exports = function (defaults) {
 };
 `,
   });
+}
+
+async function classicInRepoAddon(project) {
+  await classic(project);
+  await addInRepoAddon(project, 'fake-addon');
 }
 
 async function embroider(project) {
@@ -66,6 +72,47 @@ module.exports = function (defaults) {
   });
 }
 
+async function embroiderInRepoAddon(project) {
+  await embroider(project);
+  await addInRepoAddon(project, 'fake-addon');
+}
+
+async function addInRepoAddon(project, name, version = '0.0.0') {
+  project.linkDependency('ember-add-in-repo-tests', {
+    baseDir: __dirname,
+  });
+
+  project.pkg['ember-addon'] = {
+    paths: [`lib/${name}`],
+  };
+
+  merge(project.files, {
+    lib: {
+      [name]: {
+        'package.json': {
+          name,
+          version,
+          keywords: ['ember-addon'],
+        },
+        'index.js': `module.exports = {
+          name: require("./package").name,
+        };`,
+        tests: {
+          unit: getTestFiles('with-hooks-test.js'),
+        },
+      },
+    },
+  });
+}
+
+function getTestFiles(...files) {
+  return files.reduce((testFiles, file) => {
+    testFiles[file] = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
+
+    return testFiles;
+  }, {});
+}
+
 function baseApp() {
   return Project.fromDir(
     // eslint-disable-next-line node/no-unpublished-require
@@ -79,7 +126,9 @@ function baseApp() {
 Scenarios.fromProject(baseApp)
   .expand({
     classic,
+    classicInRepoAddon,
     embroider,
+    embroiderInRepoAddon,
   })
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {
@@ -88,57 +137,11 @@ Scenarios.fromProject(baseApp)
 
     merge(project.files, {
       tests: {
-        unit: {
-          'with-hooks-test.js': `import { module, test } from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | with-hooks-test', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-hooks-test.js'));
-  });
-});
-`,
-          'without-hooks-test.js': `import { module, test } from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | without-hooks-test', function () {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/without-hooks-test.js'));
-  });
-});
-`,
-          'with-multiple-modules-test.js': `import {module, test} from 'qunit';
-import { getTestMetadata } from '@ember/test-helpers';
-
-module('Acceptance | with-multiple-modules-test', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
-  });
-});
-
-module('Acceptance | with-multiple-modules-test 2', function (hooks) {
-  hooks.beforeEach(function () {
-    // noop
-  });
-
-  test('example', async function (assert) {
-    assert.ok(getTestMetadata(this).filePath.includes('tests/unit/with-multiple-modules-test.js'));
-  });
-});
-`,
-        },
+        unit: getTestFiles(
+          'with-hooks-test.js',
+          'without-hooks-test.js',
+          'with-multiple-modules-test.js'
+        ),
       },
     });
   })
