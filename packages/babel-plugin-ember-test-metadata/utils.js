@@ -65,7 +65,7 @@ function _addonFound(pathSegments, projectConfiguration) {
 
   const addonNames = addonPaths.map((path) => path.replace('lib/', ''));
 
-  return pathSegments.find((addonName) => addonNames.includes(addonName))[0];
+  return pathSegments.find((addonName) => addonNames.includes(addonName));
 }
 
 function _getParsedAddonPathSegments(pathSegments, addonName) {
