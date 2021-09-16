@@ -7,6 +7,9 @@ module('Acceptance | without-hooks-test', function () {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, 'tests/unit/without-hooks-test.js');
+    assert.equal(
+      getTestMetadata(this).filePath,
+      'build-scenario-prefix/tests/unit/without-hooks-test.js'
+    );
   });
 });

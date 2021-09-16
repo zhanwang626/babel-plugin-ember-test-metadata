@@ -7,7 +7,10 @@ module('Acceptance | with-multiple-modules-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-multiple-modules-test.js');
+    assert.equal(
+      getTestMetadata(this).filePath,
+      'build-scenario-prefix/tests/unit/with-multiple-modules-test.js'
+    );
   });
 });
 
@@ -17,6 +20,9 @@ module('Acceptance | with-multiple-modules-test 2', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-multiple-modules-test.js');
+    assert.equal(
+      getTestMetadata(this).filePath,
+      'build-scenario-prefix/tests/unit/with-multiple-modules-test.js'
+    );
   });
 });

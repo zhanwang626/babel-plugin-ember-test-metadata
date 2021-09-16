@@ -7,6 +7,9 @@ module('Acceptance | with-hooks-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-test.js');
+    assert.equal(
+      getTestMetadata(this).filePath,
+      'build-scenario-prefix/tests/unit/with-hooks-test.js'
+    );
   });
 });

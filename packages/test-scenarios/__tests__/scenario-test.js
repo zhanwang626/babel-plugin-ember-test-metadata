@@ -30,9 +30,8 @@ module.exports = function (defaults) {
 `,
     tests: {
       unit: getTestFiles(
-        'with-hooks-test.js',
-        'without-hooks-test.js',
-        'with-multiple-modules-test.js'
+        ['with-hooks-test.js', 'without-hooks-test.js', 'with-multiple-modules-test.js'],
+        ''
       ),
     },
   });
@@ -77,9 +76,12 @@ module.exports = function (defaults) {
 `,
     tests: {
       unit: getTestFiles(
-        'with-hooks-assert-includes-test.js',
-        'without-hooks-assert-includes-test.js',
-        'with-multiple-modules-assert-includes-test.js'
+        [
+          'with-hooks-assert-includes-test.js',
+          'without-hooks-assert-includes-test.js',
+          'with-multiple-modules-assert-includes-test.js',
+        ],
+        ''
       ),
     },
   });
@@ -117,7 +119,10 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
         includeTestsInHost: true,
       };`,
       tests: {
-        unit: getAddonTestFile('with-hooks-in-repo-addon-test.js', name),
+        unit: getTestFiles(
+          ['with-hooks-test.js', 'without-hooks-test.js', 'with-multiple-modules-test.js'],
+          `lib/${name}/`
+        ),
       },
     };
   });
@@ -157,17 +162,10 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
   });
 }
 
-function getAddonTestFile(file, addonName) {
-  const result = {};
-  const tmpFile = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
-
-  result[file] = tmpFile.replace('addon-name-placeholder', addonName);
-  return result;
-}
-
-function getTestFiles(...files) {
+function getTestFiles(files, scenarioPrefix) {
   return files.reduce((testFiles, file) => {
-    testFiles[file] = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
+    const tmpFile = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
+    testFiles[file] = tmpFile.replace(/build-scenario-prefix\//g, scenarioPrefix);
 
     return testFiles;
   }, {});
@@ -185,9 +183,9 @@ function baseApp() {
 
 Scenarios.fromProject(baseApp)
   .expand({
-    classic,
+    // classic,
     classicInRepoAddon,
-    embroider,
+    // embroider,
     // embroiderInRepoAddon,
   })
   .map('app scenarios', (project) => {
@@ -197,7 +195,6 @@ Scenarios.fromProject(baseApp)
   })
   .forEachScenario((scenario) => {
     describe(scenario.name, () => {
-      const numberOfTests = scenario.name.includes('classicInRepoAddon-app') ? '7' : '5';
       let app;
 
       beforeAll(async () => {
@@ -207,8 +204,8 @@ Scenarios.fromProject(baseApp)
       it('runs tests', async () => {
         let result = await app.execute('node ./node_modules/ember-cli/bin/ember test');
 
-        expect(result.output).toMatch(`# tests ${numberOfTests}`);
-        expect(result.output).toMatch(`# pass  ${numberOfTests}`);
+        expect(result.output).toMatch('# tests 5');
+        expect(result.output).toMatch('# pass  5');
         expect(result.exitCode).toEqual(0);
       });
     });
