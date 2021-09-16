@@ -2,11 +2,18 @@ const pluginTester = require('babel-plugin-tester').default;
 const addMetadata = require('../index');
 const path = require('path');
 
+const projectConfiguration = {
+  pkg: {
+    name: 'packages/babel-plugin-ember-test-metadata',
+    'ember-addon': {},
+  },
+};
+
 pluginTester({
   plugin: addMetadata,
   pluginName: 'addMetadata',
   snapshot: true,
-  pluginOptions: { enabled: true },
+  pluginOptions: { enabled: true, projectConfiguration },
   tests: [
     {
       title: 'for a module with hooks it adds getTestMetadata',

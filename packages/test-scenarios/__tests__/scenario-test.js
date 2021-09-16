@@ -10,6 +10,7 @@ async function classic(project) {
     'ember-cli-build.js': `'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
@@ -17,7 +18,10 @@ module.exports = function (defaults) {
       plugins: [
         [
           require.resolve('babel-plugin-ember-test-metadata'),
-          { enabled: true }
+          {
+            enabled: true,
+            projectConfiguration: getProjectConfiguration(defaults.project)
+          }
         ]
       ],
     }
@@ -26,6 +30,13 @@ module.exports = function (defaults) {
   return app.toTree();
 };
 `,
+    tests: {
+      unit: getTestFiles(
+        'with-hooks-test.js',
+        'without-hooks-test.js',
+        'with-multiple-modules-test.js'
+      ),
+    },
   });
 }
 
@@ -69,6 +80,13 @@ module.exports = function (defaults) {
   return require('@embroider/compat').compatBuild(app, Webpack);
 };
 `,
+    tests: {
+      unit: getTestFiles(
+        'with-hooks-assert-includes-test.js',
+        'without-hooks-assert-includes-test.js',
+        'with-multiple-modules-assert-includes-test.js'
+      ),
+    },
   });
 }
 
@@ -98,7 +116,7 @@ async function addInRepoAddon(project, name, version = '0.0.0') {
           name: require("./package").name,
         };`,
         tests: {
-          unit: getTestFiles('with-hooks-test.js'),
+          unit: getTestFiles('with-hooks-assert-includes-test.js'),
         },
       },
     },
@@ -133,16 +151,6 @@ Scenarios.fromProject(baseApp)
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {
       baseDir: __dirname,
-    });
-
-    merge(project.files, {
-      tests: {
-        unit: getTestFiles(
-          'with-hooks-test.js',
-          'without-hooks-test.js',
-          'with-multiple-modules-test.js'
-        ),
-      },
     });
   })
   .forEachScenario((scenario) => {

@@ -33,21 +33,63 @@ function getNodeProperty(node, path) {
 }
 
 /**
- * Get a normalized file path. If Embroider prefix is present, strip it out
+ * Function to parse defaults.project and only return info to be used by the plugin
+ * @param {object} project Ember defaults.project
+ * @param {string} project.pkg - The package of the parent project.
+ * @param {string} project.pkg.name - The name of the parent project.
+ * @param {object} project.pkg['ember-addon'] - Ember-addon info.
+ * @param {array} project.pkg['ember-addon'].paths - Ember-addon path strings.
+ * @returns {object} Contains project name and ember-addon path info
+ */
+function getProjectConfiguration(project) {
+  const parsedProjectConfiguration = {};
+
+  if (project) {
+    parsedProjectConfiguration.pkg = {
+      name: project.pkg.name,
+      'ember-addon': {
+        paths: project.pkg['ember-addon'].paths,
+      },
+    };
+  }
+
+  return parsedProjectConfiguration;
+}
+
+function _getParsedClassicFilepath(pathSegments, projectConfiguration) {
+  const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
+
+  pathSegments.splice(
+    0,
+    pathSegments.indexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
+  );
+
+  return pathSegments.join(path.sep);
+}
+
+function _getParsedEmbroiderFilepath(pathSegments) {
+  const RELATIVE_PATH_ROOT = 2;
+
+  // A typical Embroider pathSegments array would look something like:
+  // ['private', 'var', 'some-hash', 'embroider', 'another-hash', 'tests', 'acceptance', ...]
+  // This strips everything from the first segment up to and including 'another-hash',
+  pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
+
+  return pathSegments.join(path.sep);
+}
+
+/**
+ * Get a normalized file path, based on whether the app build is classic or with Embroider
  * @param {object} fileOpts Babel state.file.opts which include root and filename props
+ * @param {object} projectConfiguration Contains project name, ember-addon path info
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
-function getNormalizedFilePath(fileOpts) {
+function getNormalizedFilePath(fileOpts, projectConfiguration) {
   let { root, filename } = fileOpts;
-  const tokens = filename.split(path.sep);
-  const EMBROIDER = 'embroider';
+  const pathSegments = filename.split(path.sep);
+  const isEmbroider = pathSegments.includes('embroider');
 
-  if (tokens.includes(EMBROIDER)) {
-    const RELATIVE_PATH_ROOT = 2;
-
-    tokens.splice(0, tokens.lastIndexOf(EMBROIDER) + RELATIVE_PATH_ROOT);
-  }
-  filename = tokens.join(path.sep);
+    filename = isEmbroider ? _getParsedEmbroiderFilepath(pathSegments) : _getParsedClassicFilepath(pathSegments, projectConfiguration);
 
   return path.relative(root, filename);
 }
@@ -55,4 +97,7 @@ function getNormalizedFilePath(fileOpts) {
 module.exports = {
   getNodeProperty,
   getNormalizedFilePath,
+  getProjectConfiguration,
+  _getParsedClassicFilepath,
+  _getParsedEmbroiderFilepath,
 };
