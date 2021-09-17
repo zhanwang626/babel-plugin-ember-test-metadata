@@ -80,9 +80,9 @@ module.exports = function (defaults) {
 `,
     tests: {
       unit: getTestFiles([
-        'with-hooks-assert-includes-test.js',
-        'without-hooks-assert-includes-test.js',
-        'with-multiple-modules-assert-includes-test.js',
+        'with-hooks-test.js',
+        'without-hooks-test.js',
+        'with-multiple-modules-test.js',
       ]),
     },
   });
@@ -181,10 +181,10 @@ function baseApp() {
 
 Scenarios.fromProject(baseApp)
   .expand({
-    classic,
-    classicInRepoAddon,
+    // classic,
+    // classicInRepoAddon,
     embroider,
-    embroiderInRepoAddon,
+    // embroiderInRepoAddon,
   })
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {

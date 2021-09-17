@@ -112,12 +112,48 @@ function _getParsedEmbroiderFilepath(pathSegments) {
  */
 function getNormalizedFilePath(fileOpts, projectConfiguration) {
   let { root, filename } = fileOpts;
-  const pathSegments = filename.split(path.sep);
-  const isEmbroider = pathSegments.includes('embroider');
+  // console.log('path.filename: ', path.parse(filename));
+  // console.log('path.root: ', root);
 
-  filename = isEmbroider
-    ? _getParsedEmbroiderFilepath(pathSegments)
-    : _getParsedClassicFilepath(pathSegments, projectConfiguration);
+  const parsedRoot = path.parse(root);
+  const projectPathPrefix = projectConfiguration.pkg.name;
+  const basePath = parsedRoot.dir;
+  const basePathWithTmp = path.join(parsedRoot.dir, parsedRoot.base);
+  const baseProjectPath = path.join(root, projectPathPrefix);
+
+  console.log('filename: ', filename)
+  // console.log('projectPathPrefix: ', projectPathPrefix)
+  console.log('basePath: ', basePath)
+  console.log('basePathWithTmp: ', basePathWithTmp)
+  console.log('baseProjectPath: ', baseProjectPath)
+
+
+/**
+ * if it's embroider, trim basePathPrefix plus embroider prefix
+ *   base + embroiderPrefix + base w/tmpHash
+ * if it's classic addon, trim basePathPrefix and rearrange addon path
+ * else if it's classic, trim basePathPrefix, aka path.relative(basePathPrefix, filename)
+ */
+const embroiderRegex = new RegExp(`embroider(${path.sep})(.{6})`);
+const embroiderPrefix = filename.match(embroiderRegex)[0];
+console.log('embroiderPrefix: ', embroiderPrefix)
+
+if (embroiderPrefix) {
+  let embroiderBasePath = path.join(basePath, embroiderPrefix);
+
+  if (filename.includes(basePathWithTmp)) {
+    embroiderBasePath = path.join(embroiderBasePath, basePathWithTmp);
+  }
+
+  return path.relative(embroiderBasePath, filename);
+}
+
+  // const pathSegments = filename.split(path.sep);
+  // const isEmbroider = pathSegments.includes('embroider');
+
+  // filename = isEmbroider
+  //   ? _getParsedEmbroiderFilepath(pathSegments, fileOpts)
+  //   : _getParsedClassicFilepath(pathSegments, projectConfiguration, fileOpts);
 
   return path.relative(root, filename);
 }
