@@ -181,7 +181,7 @@ function baseApp() {
 
 Scenarios.fromProject(baseApp)
   .expand({
-    // classic,
+    classic,
     // classicInRepoAddon,
     embroider,
     // embroiderInRepoAddon,

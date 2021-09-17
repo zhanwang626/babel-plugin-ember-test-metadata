@@ -56,7 +56,8 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
-function _addonFound(pathSegments, projectConfiguration) {
+function _addonFound(filename, projectConfiguration) {
+  const pathSegments = filename.split(path.sep);
   const addonPaths = projectConfiguration.pkg['ember-addon'].paths;
 
   if (!addonPaths) {
@@ -110,52 +111,43 @@ function _getParsedEmbroiderFilepath(pathSegments) {
  * @param {object} projectConfiguration Contains project name, ember-addon path info
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
-function getNormalizedFilePath(fileOpts, projectConfiguration) {
-  let { root, filename } = fileOpts;
-  // console.log('path.filename: ', path.parse(filename));
-  // console.log('path.root: ', root);
+function getNormalizedFilePath({ root, filename }, projectConfiguration) {
+  const pathSegments = {
+    parsedRoot: path.parse(root),
+    projectPathPrefix: projectConfiguration.pkg.name,
+    basePath: '',
+    basePathWithTmp: '',
+    basePathWithProjectPrefix: '',
+  };
 
-  const parsedRoot = path.parse(root);
-  const projectPathPrefix = projectConfiguration.pkg.name;
-  const basePath = parsedRoot.dir;
-  const basePathWithTmp = path.join(parsedRoot.dir, parsedRoot.base);
-  const baseProjectPath = path.join(root, projectPathPrefix);
+  pathSegments.basePath = pathSegments.parsedRoot.dir;
+  pathSegments.basePathWithTmp = path.join(pathSegments.parsedRoot.dir, pathSegments.parsedRoot.base);
+  pathSegments.basePathWithProjectPrefix = path.join(root, pathSegments.projectPathPrefix);
 
-  console.log('filename: ', filename)
-  // console.log('projectPathPrefix: ', projectPathPrefix)
-  console.log('basePath: ', basePath)
-  console.log('basePathWithTmp: ', basePathWithTmp)
-  console.log('baseProjectPath: ', baseProjectPath)
+  /**
+   * if it's embroider, trim basePathPrefix plus embroider prefix
+   *   base + embroiderPrefix + base w/tmpHash
+   * if it's classic addon, trim basePathPrefix and rearrange addon path
+   * else if it's classic, trim basePathPrefix, aka path.relative(basePathPrefix, filename)
+   */
+  const embroiderRegex = new RegExp(`embroider(${path.sep})(.{6})`);
+  const embroiderPrefix = filename.match(embroiderRegex);
 
+  if (embroiderPrefix) {
+    let embroiderBasePath = path.join(pathSegments.basePath, embroiderPrefix[0]);
 
-/**
- * if it's embroider, trim basePathPrefix plus embroider prefix
- *   base + embroiderPrefix + base w/tmpHash
- * if it's classic addon, trim basePathPrefix and rearrange addon path
- * else if it's classic, trim basePathPrefix, aka path.relative(basePathPrefix, filename)
- */
-const embroiderRegex = new RegExp(`embroider(${path.sep})(.{6})`);
-const embroiderPrefix = filename.match(embroiderRegex)[0];
-console.log('embroiderPrefix: ', embroiderPrefix)
+    if (filename.includes(pathSegments.basePathWithTmp)) {
+      embroiderBasePath = path.join(embroiderBasePath, pathSegments.basePathWithTmp);
+    }
 
-if (embroiderPrefix) {
-  let embroiderBasePath = path.join(basePath, embroiderPrefix);
-
-  if (filename.includes(basePathWithTmp)) {
-    embroiderBasePath = path.join(embroiderBasePath, basePathWithTmp);
+    return path.relative(embroiderBasePath, filename);
   }
 
-  return path.relative(embroiderBasePath, filename);
-}
+  if (_addonFound(filename, projectConfiguration)) {
+    console.log('---process addon path')
+  }
 
-  // const pathSegments = filename.split(path.sep);
-  // const isEmbroider = pathSegments.includes('embroider');
-
-  // filename = isEmbroider
-  //   ? _getParsedEmbroiderFilepath(pathSegments, fileOpts)
-  //   : _getParsedClassicFilepath(pathSegments, projectConfiguration, fileOpts);
-
-  return path.relative(root, filename);
+  return path.relative(pathSegments.basePathWithProjectPrefix, filename);
 }
 
 module.exports = {
