@@ -107,13 +107,13 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
   names.forEach((name) => {
     project.pkg['ember-addon'].paths.push(`lib/${name}`);
     lib[name] = {
-      'package.json': `{
-        "name": "${name}",
-        "version": "${version}",
+      'package.json': JSON.stringify({
+        name,
+        version,
         "keywords": ["ember-addon"]
-      }`,
+      }),
       'index.js': `module.exports = {
-        name: '${name}',
+        name: require("./package").name,
         isDevelopingAddon() {
           return true;
         },
