@@ -10,7 +10,6 @@ async function classic(project) {
     'ember-cli-build.js': `'use strict';
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
-
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     babel: {
@@ -29,10 +28,11 @@ module.exports = function (defaults) {
 };
 `,
     tests: {
-      unit: getTestFiles(
-        ['with-hooks-test.js', 'without-hooks-test.js', 'with-multiple-modules-test.js'],
-        ''
-      ),
+      unit: getTestFiles([
+        'with-hooks-test.js',
+        'without-hooks-test.js',
+        'with-multiple-modules-test.js',
+      ]),
     },
   });
 }
@@ -59,13 +59,17 @@ async function embroider(project) {
   merge(project.files, {
     'ember-cli-build.js': `'use strict';
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     babel: {
       plugins: [
         [
           require.resolve('babel-plugin-ember-test-metadata'),
-          { enabled: true }
+          {
+            enabled: true,
+            projectConfiguration: getProjectConfiguration(defaults.project)
+          }
         ]
       ],
     }
@@ -75,22 +79,19 @@ module.exports = function (defaults) {
 };
 `,
     tests: {
-      unit: getTestFiles(
-        [
-          'with-hooks-assert-includes-test.js',
-          'without-hooks-assert-includes-test.js',
-          'with-multiple-modules-assert-includes-test.js',
-        ],
-        ''
-      ),
+      unit: getTestFiles([
+        'with-hooks-assert-includes-test.js',
+        'without-hooks-assert-includes-test.js',
+        'with-multiple-modules-assert-includes-test.js',
+      ]),
     },
   });
 }
 
-// async function embroiderInRepoAddon(project) {
-//   await embroider(project);
-//   await addInRepoAddon(project, 'fake-addon');
-// }
+async function embroiderInRepoAddon(project) {
+  await embroider(project);
+  await addInRepoAddon(project, ['fake-addon', 'fake-addon-two']);
+}
 
 async function addInRepoAddon(project, names, version = '0.0.0') {
   project.linkDependency('ember-add-in-repo-tests', {
@@ -129,11 +130,9 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
 
   merge(project.files, {
     'ember-cli-build.js': `'use strict';
-
     const EmberApp = require('ember-cli/lib/broccoli/ember-app');
     const { addInRepoTestsToHost } = require('ember-add-in-repo-tests');
     const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
-
     module.exports = function (defaults) {
       let app = new EmberApp(defaults, {
         trees: {
@@ -154,7 +153,6 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
           ],
         }
       });
-
       return app.toTree();
     };
     `,
@@ -162,7 +160,7 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
   });
 }
 
-function getTestFiles(files, scenarioPrefix) {
+function getTestFiles(files, scenarioPrefix = '') {
   return files.reduce((testFiles, file) => {
     const tmpFile = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
     testFiles[file] = tmpFile.replace(/build-scenario-prefix\//g, scenarioPrefix);
@@ -183,10 +181,10 @@ function baseApp() {
 
 Scenarios.fromProject(baseApp)
   .expand({
-    // classic,
+    classic,
     classicInRepoAddon,
-    // embroider,
-    // embroiderInRepoAddon,
+    embroider,
+    embroiderInRepoAddon,
   })
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {
@@ -195,6 +193,11 @@ Scenarios.fromProject(baseApp)
   })
   .forEachScenario((scenario) => {
     describe(scenario.name, () => {
+      const numberOfTests =
+        scenario.name.includes('classicInRepoAddon-app') ||
+        scenario.name.includes('embroiderInRepoAddon-app')
+          ? '13'
+          : '5';
       let app;
 
       beforeAll(async () => {
@@ -204,8 +207,8 @@ Scenarios.fromProject(baseApp)
       it('runs tests', async () => {
         let result = await app.execute('node ./node_modules/ember-cli/bin/ember test');
 
-        expect(result.output).toMatch('# tests 5');
-        expect(result.output).toMatch('# pass  5');
+        expect(result.output).toMatch(`# tests ${numberOfTests}`);
+        expect(result.output).toMatch(`# pass  ${numberOfTests}`);
         expect(result.exitCode).toEqual(0);
       });
     });
