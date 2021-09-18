@@ -182,9 +182,9 @@ function baseApp() {
 Scenarios.fromProject(baseApp)
   .expand({
     classic,
-    // classicInRepoAddon,
+    classicInRepoAddon,
     embroider,
-    // embroiderInRepoAddon,
+    embroiderInRepoAddon,
   })
   .map('app scenarios', (project) => {
     project.linkDependency('babel-plugin-ember-test-metadata', {

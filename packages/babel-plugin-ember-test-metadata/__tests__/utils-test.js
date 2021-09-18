@@ -3,7 +3,6 @@ const {
   getNodeProperty,
   getNormalizedFilePath,
   _getParsedClassicFilepath,
-  _getParsedEmbroiderFilepath,
 } = require('../utils');
 
 describe('getNodeProperty', () => {
@@ -116,27 +115,5 @@ describe('_getParsedClassicFilepath', () => {
         }
       )
     ).toBe(path.join('tests', 'acceptance', 'my-test.js'));
-  });
-});
-
-describe('_getParsedEmbroiderFilepath', () => {
-  const filename = path.join(
-    'private',
-    'var',
-    'folders',
-    'abcdefg1234',
-    'T',
-    'embroider',
-    '098765',
-    'tests',
-    'acceptance',
-    'my-test.js'
-  );
-  const pathSegments = filename.split(path.sep);
-
-  it('returns file path from classic build correctly', () => {
-    expect(_getParsedEmbroiderFilepath(pathSegments)).toBe(
-      path.join('tests', 'acceptance', 'my-test.js')
-    );
   });
 });
