@@ -80,16 +80,16 @@ function getNormalizedFilePath({ root, filename }, projectConfiguration) {
   const rootDirWithBase = path.join(path.parse(root).dir, path.parse(root).base);
   const embroiderRegex = new RegExp(`embroider(${path.sep})(.{6})`);
   const embroiderPrefix = filename.match(embroiderRegex);
-  const embroiderPrefixIndex = filename.search(embroiderRegex);
   const addonFound = _addonFound(filename, projectConfiguration);
 
   if (embroiderPrefix) {
+    const embroiderPrefixIndex = filename.search(embroiderRegex);
     let embroiderPath = filename.substring(embroiderPrefixIndex);
-    embroiderPath = embroiderPath.replace(embroiderPrefix[0] + path.sep, '');
 
     if (filename.includes(rootDirWithBase)) {
       embroiderPath = embroiderPath.replace(rootDirWithBase, '')
     }
+    embroiderPath = embroiderPath.replace(embroiderPrefix[0] + path.sep, '');
 
     return embroiderPath;
   }
