@@ -44,6 +44,12 @@ async function classicInRepoAddon(project) {
   await addInRepoAddon(project, 'fake-addon');
 }
 
+async function classicMultipleInRepoAddon(project) {
+  await classic(project);
+  await addInRepoAddon(project, 'fake-addon');
+  await addInRepoAddon(project, 'fake-addon-two');
+}
+
 async function embroider(project) {
   project.pkg.scenarioTesterTests = {
     tests: {
@@ -102,9 +108,12 @@ async function addInRepoAddon(project, name, version = '0.0.0') {
     baseDir: __dirname,
   });
 
-  project.pkg['ember-addon'] = {
-    paths: [`lib/${name}`],
-  };
+  if (!project.pkg['ember-addon']) {
+    project.pkg['ember-addon'] = {
+      paths: [],
+    };
+  }
+  project.pkg['ember-addon'].paths.push(`lib/${name}`);
 
   project.pkg.scenarioTesterTests = {
     lib: {
@@ -189,6 +198,7 @@ Scenarios.fromProject(baseApp)
   .expand({
     classic,
     classicInRepoAddon,
+    classicMultipleInRepoAddon,
     embroider,
     embroiderInRepoAddon,
   })
