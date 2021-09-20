@@ -1,8 +1,5 @@
 const path = require('path');
-const {
-  getNodeProperty,
-  getNormalizedFilePath,
-} = require('../utils');
+const { getNodeProperty, getNormalizedFilePath } = require('../utils');
 
 describe('getNodeProperty', () => {
   it('returns property as expected', () => {
@@ -38,38 +35,37 @@ describe('getNormalizedFilePath', () => {
   };
 
   it('returns stripped file path as expected', () => {
-    expect(getNormalizedFilePath({
-      root: path.join(
-        'private',
-        'var',
-        'folders',
-        'abcdefg1234',
-        'T',
-        '1357'
-      ),
-      filename: path.join(
-        'private',
-        'var',
-        'folders',
-        'abcdefg1234',
-        'T',
-        'embroider',
-        '098765',
-        'tests',
-        'acceptance',
-        'my-test.js'
-      ),
-    }, projectConfiguration)).toBe(
-      path.join('tests', 'acceptance', 'my-test.js')
-    );
+    expect(
+      getNormalizedFilePath(
+        {
+          root: path.join('private', 'var', 'folders', 'abcdefg1234', 'T', '1357'),
+          filename: path.join(
+            'private',
+            'var',
+            'folders',
+            'abcdefg1234',
+            'T',
+            'embroider',
+            '098765',
+            'tests',
+            'acceptance',
+            'my-test.js'
+          ),
+        },
+        projectConfiguration
+      )
+    ).toEqual(path.join('tests', 'acceptance', 'my-test.js'));
   });
 
   it('returns unmodified file path when path does not include "embroider" as a segment', () => {
-    expect(getNormalizedFilePath({
-      root: path.join('packages', 'test-app'),
-      filename: path.join('packages', 'test-app', 'this', 'is', 'not-an-embroider', 'path'),
-    }, projectConfiguration)).toBe(
-      path.join('this', 'is', 'not-an-embroider', 'path')
-    );
+    expect(
+      getNormalizedFilePath(
+        {
+          root: path.join('packages', 'test-app'),
+          filename: path.join('packages', 'test-app', 'this', 'is', 'not-an-embroider', 'path'),
+        },
+        projectConfiguration
+      )
+    ).toEqual(path.join('this', 'is', 'not-an-embroider', 'path'));
   });
 });
