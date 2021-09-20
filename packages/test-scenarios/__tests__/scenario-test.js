@@ -41,7 +41,7 @@ module.exports = function (defaults) {
 
 async function classicInRepoAddon(project) {
   await classic(project);
-  await addInRepoAddon(project, ['fake-addon']);
+  await addInRepoAddon(project, 'fake-addon');
 }
 
 async function embroider(project) {
@@ -94,48 +94,28 @@ module.exports = function (defaults) {
 
 async function embroiderInRepoAddon(project) {
   await embroider(project);
-  await addInRepoAddon(project, ['fake-addon']);
+  await addInRepoAddon(project, 'fake-addon');
 }
 
-async function addInRepoAddon(project, names, version = '0.0.0') {
+async function addInRepoAddon(project, name, version = '0.0.0') {
   project.linkDependency('ember-add-in-repo-tests', {
     baseDir: __dirname,
   });
 
   project.pkg['ember-addon'] = {
-    paths: [],
+    paths: [`lib/${name}`],
   };
-
-  const lib = {};
-
-  names.forEach((name) => {
-    project.pkg['ember-addon'].paths.push(`lib/${name}`);
-    lib[name] = {
-      'package.json': JSON.stringify({
-        name,
-        version,
-        keywords: ['ember-addon'],
-      }),
-      'index.js': `module.exports = {
-        name: require("./package").name,
-        isDevelopingAddon() {
-          return true;
-        },
-        includeTestsInHost: true,
-      };`,
-    };
-  });
 
   project.pkg.scenarioTesterTests = {
-    lib: {},
-  };
-
-  project.pkg.scenarioTesterTests.lib[names[0]] = {
-    tests: {
-      unit: getTestFiles(
-        ['with-hooks-test.js', 'without-hooks-test.js', 'with-multiple-modules-test.js'],
-        `lib/${names[0]}/`
-      ),
+    lib: {
+      [name]: {
+        tests: {
+          unit: getTestFiles(
+            ['with-hooks-test.js', 'without-hooks-test.js', 'with-multiple-modules-test.js'],
+            `lib/${name}/`
+          ),
+        },
+      },
     },
   };
 
@@ -167,7 +147,22 @@ async function addInRepoAddon(project, names, version = '0.0.0') {
       return app.toTree();
     };
     `,
-    lib,
+    lib: {
+      [name]: {
+        'package.json': JSON.stringify({
+          name,
+          version,
+          keywords: ['ember-addon'],
+        }),
+        'index.js': `module.exports = {
+          name: require("./package").name,
+          isDevelopingAddon() {
+            return true;
+          },
+          includeTestsInHost: true,
+        };`,
+      },
+    },
   });
 }
 
