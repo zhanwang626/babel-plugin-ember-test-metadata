@@ -1,5 +1,7 @@
 const path = require('path');
 
+const EMBROIDER_REGEX = new RegExp(`embroider(${path.sep})(.{6})`);
+
 /**
  * Utility to get a property from a given path
  * @param {object} node
@@ -56,7 +58,7 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
-function _addonFound(filename, projectConfiguration) {
+function getAddonName(filename, projectConfiguration) {
   const pathSegments = filename.split(path.sep);
   const addonPaths = projectConfiguration.pkg['ember-addon'].paths;
 
@@ -78,26 +80,25 @@ function _addonFound(filename, projectConfiguration) {
 function getNormalizedFilePath({ root, filename }, projectConfiguration) {
   const projectPathPrefix = projectConfiguration.pkg.name;
   const rootDirWithBase = path.join(path.parse(root).dir, path.parse(root).base);
-  const embroiderRegex = new RegExp(`embroider(${path.sep})(.{6})`);
-  const embroiderPrefix = filename.match(embroiderRegex);
-  const addonFound = _addonFound(filename, projectConfiguration);
+  const embroiderSegment = filename.match(EMBROIDER_REGEX);
+  const addonName = getAddonName(filename, projectConfiguration);
 
-  if (embroiderPrefix) {
-    const embroiderPrefixIndex = filename.search(embroiderRegex);
-    let embroiderPath = filename.substring(embroiderPrefixIndex);
+  if (embroiderSegment) {
+    const embroiderSegmentIndex = filename.search(EMBROIDER_REGEX);
+    let embroiderPath = filename.substring(embroiderSegmentIndex);
 
     if (filename.includes(rootDirWithBase)) {
-      embroiderPath = embroiderPath.replace(rootDirWithBase, '')
+      embroiderPath = embroiderPath.replace(rootDirWithBase, '');
     }
-    embroiderPath = embroiderPath.replace(embroiderPrefix[0] + path.sep, '');
+    embroiderPath = embroiderPath.replace(embroiderSegment[0] + path.sep, '');
 
     return embroiderPath;
   }
 
-  if (addonFound) {
+  if (addonName) {
     const rootDirBaseWithProjectPrefix = path.join(rootDirWithBase, projectPathPrefix);
-    const sourceAddonPath = path.join(rootDirBaseWithProjectPrefix, 'tests', addonFound);
-    const targetAddonPath = path.join(rootDirBaseWithProjectPrefix, 'lib', addonFound, 'tests');
+    const sourceAddonPath = path.join(rootDirBaseWithProjectPrefix, 'tests', addonName);
+    const targetAddonPath = path.join(rootDirBaseWithProjectPrefix, 'lib', addonName, 'tests');
     const parsedAddonPath = filename.replace(sourceAddonPath, targetAddonPath);
 
     return parsedAddonPath.replace(rootDirBaseWithProjectPrefix + path.sep, '');
