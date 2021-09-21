@@ -32,6 +32,33 @@ describe('getNodeProperty', () => {
 });
 
 describe('getNormalizedFilePath', () => {
+  describe("given file path from an classic addon build", () => {
+    const testFilePath = path.join('tests', 'acceptance', 'example-test.js');
+    const appName = "example-app";
+
+    it("returns the normalized filepath with the addon name", () => {
+      const addonName = "example-addon";
+      const actualAddonBasePath = path.join(appName, addonName);
+      const transpiledAddonPath = path.join(appName, addonName, testFilePath);
+      const expectedAddonBasePath = path.join('lib', addonName);
+
+      const config = {
+        pkg: {
+          name: appName,
+          'ember-addon': {
+            paths: [actualAddonBasePath]
+          },
+        },
+      }
+      const opts = { filename: transpiledAddonPath, root: appName };
+
+      expect(getNormalizedFilePath(opts, config)).toBe(
+        path.join(expectedAddonBasePath, testFilePath)
+      );
+    });
+  });
+
+
   const fileOpts = {
     embroiderBuildPath: {
       root: '',

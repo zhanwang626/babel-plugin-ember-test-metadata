@@ -56,6 +56,12 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
+function _addonPath(pathSegments, addonName) {
+  pathSegments.splice(0, pathSegments.indexOf(addonName));
+
+  return path.join('lib', ...pathSegments);
+}
+
 function _getParsedClassicFilepath(pathSegments, projectConfiguration) {
   const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
 
@@ -88,10 +94,22 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
   let { root, filename } = fileOpts;
   const pathSegments = filename.split(path.sep);
   const isEmbroider = pathSegments.includes('embroider');
+  const addons = projectConfiguration.pkg["ember-addon"];
 
-    filename = isEmbroider ? _getParsedEmbroiderFilepath(pathSegments) : _getParsedClassicFilepath(pathSegments, projectConfiguration);
+  if (isEmbroider) {
+    const result = _getParsedEmbroiderFilepath(pathSegments);
+    return path.relative(root, result);
+  }
 
-  return path.relative(root, filename);
+  if (addons && addons.paths) {
+    const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
+    const addonName = addonNames.find(name => pathSegments.includes(name));
+
+    return _addonPath(pathSegments, addonName);
+  } else {
+    const result = _getParsedClassicFilepath(pathSegments, projectConfiguration);
+    return path.relative(root, result);
+  }
 }
 
 module.exports = {
