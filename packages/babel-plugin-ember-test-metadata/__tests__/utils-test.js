@@ -32,9 +32,22 @@ describe('getNodeProperty', () => {
 });
 
 describe('getNormalizedFilePath', () => {
-  describe("given file path from an classic addon build", () => {
-    const testFilePath = path.join('tests', 'acceptance', 'example-test.js');
-    const appName = "example-app";
+  const testFilePath = path.join('tests', 'acceptance', 'example-test.js');
+  const appName = "example-app";
+
+  // classic/tests/acceptance/foo-test.js
+  describe("given file path from a classic build", () => {
+    const transpiledPath = path.join(appName, testFilePath);
+
+    const config = {
+      pkg: {
+        name: appName
+      },
+    }
+    const opts = { filename: transpiledPath, root: appName };
+
+    expect(getNormalizedFilePath(opts, config)).toBe(testFilePath);
+  });
 
     it("returns the normalized filepath with the addon name", () => {
       const addonName = "example-addon";

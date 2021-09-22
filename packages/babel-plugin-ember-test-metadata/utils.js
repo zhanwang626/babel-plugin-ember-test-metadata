@@ -107,8 +107,7 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
 
     return _addonPath(pathSegments, addonName);
   } else {
-    const result = _getParsedClassicFilepath(pathSegments, projectConfiguration);
-    return path.relative(root, result);
+    return _getParsedClassicFilepath(pathSegments, projectConfiguration);
   }
 }
 
