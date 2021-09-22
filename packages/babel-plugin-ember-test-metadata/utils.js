@@ -91,14 +91,13 @@ function _getParsedEmbroiderFilepath(pathSegments) {
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
 function getNormalizedFilePath(fileOpts, projectConfiguration) {
-  let { root, filename } = fileOpts;
+  let { filename } = fileOpts;
   const pathSegments = filename.split(path.sep);
   const isEmbroider = pathSegments.includes('embroider');
   const addons = projectConfiguration.pkg["ember-addon"];
 
   if (isEmbroider) {
-    const result = _getParsedEmbroiderFilepath(pathSegments);
-    return path.relative(root, result);
+    return _getParsedEmbroiderFilepath(pathSegments);
   }
 
   if (addons && addons.paths) {

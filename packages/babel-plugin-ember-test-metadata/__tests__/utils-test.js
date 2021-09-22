@@ -49,6 +49,9 @@ describe('getNormalizedFilePath', () => {
     expect(getNormalizedFilePath(opts, config)).toBe(testFilePath);
   });
 
+  // classic/tests/acceptance/foo-test.js
+  // classic/tests/bar/acceptance/baz-test.js
+  describe("given file path from an classic addon build", () => {
     it("returns the normalized filepath with the addon name", () => {
       const addonName = "example-addon";
       const actualAddonBasePath = path.join(appName, addonName);
@@ -69,6 +72,29 @@ describe('getNormalizedFilePath', () => {
         path.join(expectedAddonBasePath, testFilePath)
       );
     });
+  });
+
+  // ../../../../../../private/var/folders/5m/4ybwhyvn3979lm2223q_q22c000gyd/T/embroider/20408c/tests/acceptance/foo-test.js
+  describe("given file path from an embroider build", () => {
+    const transpiledPath = path.join(
+      'private',
+      'var',
+      'folders',
+      'abcdefg1234',
+      'T',
+      'embroider',
+      '098765',
+      testFilePath
+    )
+
+    const config = {
+      pkg: {
+        name: appName
+      },
+    }
+    const opts = { filename: transpiledPath, root: appName };
+
+    expect(getNormalizedFilePath(opts, config)).toBe(testFilePath);
   });
 
 
