@@ -60,25 +60,24 @@ async function addInRepoAddon(project, name, version = '0.0.0') {
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const { addInRepoTestsToHost } = require('ember-add-in-repo-tests');
 const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
+
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
-    trees: {
-      tests: addInRepoTestsToHost(
-        defaults.project,
-        addon => addon.includeTestsInHost
-      ),
-    },
     babel: {
       plugins: [
         [
           require.resolve('babel-plugin-ember-test-metadata'),
-          {
-            enabled: true,
-            projectConfiguration: getProjectConfiguration(defaults.project)
-          }
-        ]
+          { enabled: true },
+        ],
       ],
-    }
+    },
+    trees: {
+      tests: addInRepoTestsToHost({
+        project: defaults.project,
+        shouldIncludeTestsInHost: (addon) => addon.includeTestsInHost,
+        projectConfiguration: getProjectConfiguration(defaults.project)
+      }),
+    },
   });
 
   return app.toTree();
@@ -126,7 +125,7 @@ function baseApp() {
 
 Scenarios.fromProject(baseApp)
   .expand({
-    classic,
+    // classic,
     classicInRepoAddon,
   })
   .map('app scenarios', (project) => {
@@ -145,6 +144,7 @@ Scenarios.fromProject(baseApp)
       it('runs tests', async () => {
         let result = await app.execute('node ./node_modules/ember-cli/bin/ember test');
 
+        expect(result.output).toEqual("goo");
         expect(result.exitCode).toEqual(0);
       });
     });

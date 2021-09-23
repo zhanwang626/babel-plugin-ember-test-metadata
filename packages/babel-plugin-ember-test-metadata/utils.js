@@ -56,34 +56,6 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
-function _addonPath(pathSegments, addonName) {
-  pathSegments.splice(0, pathSegments.indexOf(addonName));
-
-  return path.join('lib', ...pathSegments);
-}
-
-function _getParsedClassicFilepath(pathSegments, projectConfiguration) {
-  const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
-
-  pathSegments.splice(
-    0,
-    pathSegments.indexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
-  );
-
-  return pathSegments.join(path.sep);
-}
-
-function _getParsedEmbroiderFilepath(pathSegments) {
-  const RELATIVE_PATH_ROOT = 2;
-
-  // A typical Embroider pathSegments array would look something like:
-  // ['private', 'var', 'some-hash', 'embroider', 'another-hash', 'tests', 'acceptance', ...]
-  // This strips everything from the first segment up to and including 'another-hash',
-  pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
-
-  return pathSegments.join(path.sep);
-}
-
 /**
  * Get a normalized file path, based on whether the app build is classic or with Embroider
  * @param {object} fileOpts Babel state.file.opts which include root and filename props
@@ -95,25 +67,61 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
   const pathSegments = filename.split(path.sep);
   const isEmbroider = pathSegments.includes('embroider');
   const addons = projectConfiguration.pkg["ember-addon"];
+  const hasAddons = addons && addons.paths;
+  const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
 
-  if (isEmbroider) {
-    return _getParsedEmbroiderFilepath(pathSegments);
-  }
+  let result;
 
-  if (addons && addons.paths) {
+  if (!isEmbroider && !hasAddons) {
+    pathSegments.splice(
+      0,
+      pathSegments.lastIndexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
+    );
+
+    result = pathSegments.join(path.sep);
+  } else if (!isEmbroider && hasAddons) {
     const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
     const addonName = addonNames.find(name => pathSegments.includes(name));
 
-    return _addonPath(pathSegments, addonName);
-  } else {
-    return _getParsedClassicFilepath(pathSegments, projectConfiguration);
+    if (pathSegments.includes(addonName)) {
+      pathSegments.splice(0, pathSegments.indexOf("ember-add-in-repo-tests") + 1);
+      result = [...pathSegments].join(path.sep)
+    } else {
+      const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
+      pathSegments.splice(
+        0,
+        pathSegments.lastIndexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
+      );
+      result = pathSegments.join(path.sep);
+    }
+  } else if (isEmbroider && !hasAddons) {
+    const RELATIVE_PATH_ROOT = 2;
+    pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
+
+    result = pathSegments.join(path.sep);
+  } else if (isEmbroider && hasAddons) {
+    const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
+    const addonName = addonNames.find(name => pathSegments.includes(name));
+
+    if (pathSegments.includes(addonName)) {
+      pathSegments.splice(0, pathSegments.lastIndexOf(addonName) + 1);
+
+
+
+      result = ['lib', addonName, "tests", ...pathSegments].join(path.sep)
+    } else {
+      const RELATIVE_PATH_ROOT = 2;
+      pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
+
+      result = pathSegments.join(path.sep);
+    }
   }
+
+  return result;
 }
 
 module.exports = {
   getNodeProperty,
   getNormalizedFilePath,
   getProjectConfiguration,
-  _getParsedClassicFilepath,
-  _getParsedEmbroiderFilepath,
 };
