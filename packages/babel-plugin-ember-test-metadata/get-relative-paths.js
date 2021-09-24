@@ -1,11 +1,9 @@
 const path = require('path');
 
 function _getRelativePathForClassic(filePath, projectName) {
-  const formattedPath = filePath
+  return filePath
     .slice(filePath.lastIndexOf(projectName), filePath.length)
     .replace(`${projectName}/`, '');
-
-  return formattedPath;
 }
 
 function _getRelativePathForClassicInRepo(filePath) {
