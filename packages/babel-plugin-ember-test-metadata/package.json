@@ -36,7 +36,9 @@
       "/__fixtures__/"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "object-path": "^0.11.8"
+  },
   "devDependencies": {
     "babel-plugin-tester": "^10.1.0",
     "jest": "^27.0.6"
