@@ -21,6 +21,10 @@ describe('get-relative-paths', () => {
           '/Users/tester/workspace/classic/classic/tests/acceptance/subdir/subdir/foo-test.js',
         expected: 'tests/acceptance/subdir/subdir/foo-test.js',
       },
+      {
+        filePath: '/Users/tester/workspace/foo/classic/tests/acceptance/subdir/subdir/foo-test.js',
+        expected: 'tests/acceptance/subdir/subdir/foo-test.js',
+      },
     ];
 
     testCases.forEach(({ filePath, expected }) => {
@@ -43,6 +47,11 @@ describe('get-relative-paths', () => {
       {
         filePath:
           '/Users/tester/workspace/classic/classic/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/subdir/subdir/baz-test.js',
+        expected: 'lib/bar/tests/acceptance/subdir/subdir/baz-test.js',
+      },
+      {
+        filePath:
+          '/Users/tester/workspace/foo/classic/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/subdir/subdir/baz-test.js',
         expected: 'lib/bar/tests/acceptance/subdir/subdir/baz-test.js',
       },
     ];
