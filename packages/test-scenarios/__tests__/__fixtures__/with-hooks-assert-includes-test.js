@@ -7,8 +7,6 @@ module('Acceptance | with-hooks-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    assert.ok(
-      getTestMetadata(this).filePath.includes('tests/unit/with-hooks-assert-includes-test.js')
-    );
+    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-assert-includes-test.js');
   });
 });

@@ -13,7 +13,7 @@
     "@embroider/core": "^0.44.1",
     "@embroider/webpack": "^0.44.1",
     "babel-plugin-ember-test-metadata": "*",
-    "ember-add-in-repo-tests": "^1.0.3",
+    "ember-add-in-repo-tests": "2.0.0-beta.0",
     "webpack": "^5.52.0"
   },
   "scripts": {

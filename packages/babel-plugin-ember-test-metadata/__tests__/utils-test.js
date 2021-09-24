@@ -1,10 +1,4 @@
-const path = require('path');
-const {
-  getNodeProperty,
-  getNormalizedFilePath,
-  _getParsedClassicFilepath,
-  _getParsedEmbroiderFilepath,
-} = require('../utils');
+const { getNodeProperty, getNormalizedFilePath } = require('../utils');
 
 describe('getNodeProperty', () => {
   it('returns property as expected', () => {
@@ -18,125 +12,135 @@ describe('getNodeProperty', () => {
       },
     };
 
-    expect(getNodeProperty(mockNode, 'system.settings.volume.level')).toBe(11);
-    expect(getNodeProperty(mockNode.system.settings, 'volume.level')).toBe(11);
-    expect(getNodeProperty(mockNode, 'unknown.leaf.property')).toBe(undefined);
+    expect(getNodeProperty(mockNode, 'system.settings.volume.level')).toEqual(11);
+    expect(getNodeProperty(mockNode.system.settings, 'volume.level')).toEqual(11);
+    expect(getNodeProperty(mockNode, 'unknown.leaf.property')).toEqual(undefined);
   });
 
   it('returns early if no node is provided', () => {
     let emptyNode;
-    expect(getNodeProperty(emptyNode, 'volume.level')).toBe(undefined);
-    expect(getNodeProperty(null, 'volume.level')).toBe(undefined);
-    expect(getNodeProperty({}, 'volume.level')).toBe(undefined);
+    expect(getNodeProperty(emptyNode, 'volume.level')).toEqual(undefined);
+    expect(getNodeProperty(null, 'volume.level')).toEqual(undefined);
+    expect(getNodeProperty({}, 'volume.level')).toEqual(undefined);
   });
 });
 
 describe('getNormalizedFilePath', () => {
-  const fileOpts = {
-    embroiderBuildPath: {
-      root: '',
-      filename: path.join(
-        'private',
-        'var',
-        'folders',
-        'abcdefg1234',
-        'T',
-        'embroider',
-        '098765',
-        'tests',
-        'acceptance',
-        'my-test.js'
-      ),
-    },
-    embroiderBuildPathTwoEmbroiderPathSegments: {
-      root: '',
-      filename: path.join(
-        'private',
-        'var',
-        'folders',
-        'embroider',
-        'abcdefg1234',
-        'T',
-        'embroider',
-        '098765',
-        'tests',
-        'acceptance',
-        'my-test.js'
-      ),
-    },
-    normalFilePath: {
-      root: '',
-      filename: path.join('this', 'is', 'not-an-embroider', 'path'),
-    },
-  };
-  const projectConfiguration = {
-    pkg: {
-      name: 'test-app',
-      'ember-addon': {},
-    },
-  };
+  describe('classic', () => {
+    const appRoot = '/Users/tester/workspace/personal/test-bed/classic';
 
-  it('returns stripped file path as expected', () => {
-    expect(getNormalizedFilePath(fileOpts.embroiderBuildPath, projectConfiguration)).toBe(
-      path.join('tests', 'acceptance', 'my-test.js')
-    );
-    expect(
-      getNormalizedFilePath(
-        fileOpts.embroiderBuildPathTwoEmbroiderPathSegments,
-        projectConfiguration
-      )
-    ).toBe(path.join('tests', 'acceptance', 'my-test.js'));
-  });
-
-  it('returns unmodified file path when path does not include "embroider" as a segment', () => {
-    expect(getNormalizedFilePath(fileOpts.normalFilePath, projectConfiguration)).toBe(
-      path.join('this', 'is', 'not-an-embroider', 'path')
-    );
-  });
-});
-
-describe('_getParsedClassicFilepath', () => {
-  it('returns file path from classic build correctly', () => {
-    expect(
-      _getParsedClassicFilepath(['test-app', 'tests', 'acceptance', 'my-test.js'], {
+    it('returns the normalized filepath', () => {
+      const filePath =
+        '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
+      const expectedPath = 'tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: '/Users/tester/workspace/personal/test-bed/classic',
+      };
+      const config = {
         pkg: {
-          name: 'test-app',
-          'ember-addon': {},
+          name: 'classic',
         },
-      })
-    ).toBe(path.join('tests', 'acceptance', 'my-test.js'));
-    expect(
-      _getParsedClassicFilepath(
-        ['@parent-repo-name', 'test-app', 'tests', 'acceptance', 'my-test.js'],
-        {
-          pkg: {
-            name: `@parent-repo-name${path.sep}test-app`,
-            'ember-addon': {},
-          },
-        }
-      )
-    ).toBe(path.join('tests', 'acceptance', 'my-test.js'));
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath for the in app test', () => {
+      const filePath =
+        '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
+      const expectedPath = 'tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: '/Users/tester/workspace/personal/test-bed/classic',
+      };
+      const config = {
+        pkg: {
+          name: 'classic',
+        },
+      };
+      config.pkg['ember-addon'] = {
+        paths: ['lib/bar'],
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath with the addon name', () => {
+      const filePath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/foo-test.js`;
+      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`;
+      const opts = { filename: filePath, root: appRoot };
+      const config = {
+        pkg: {
+          name: 'classic',
+        },
+      };
+      config.pkg['ember-addon'] = {
+        paths: ['lib/bar'],
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
   });
-});
 
-describe('_getParsedEmbroiderFilepath', () => {
-  const filename = path.join(
-    'private',
-    'var',
-    'folders',
-    'abcdefg1234',
-    'T',
-    'embroider',
-    '098765',
-    'tests',
-    'acceptance',
-    'my-test.js'
-  );
-  const pathSegments = filename.split(path.sep);
+  describe('embroider', () => {
+    const appRoot = '/private/var/folders/abcdefg1234/T/embroider/098765';
 
-  it('returns file path from classic build correctly', () => {
-    expect(_getParsedEmbroiderFilepath(pathSegments)).toBe(
-      path.join('tests', 'acceptance', 'my-test.js')
-    );
+    it('returns the normalized filepath for app tests', () => {
+      const expectedPath = `tests/acceptance/foo-test.js`;
+      const filePath = `${appRoot}/tests/acceptance/foo-test.js`;
+      const config = {
+        pkg: {
+          name: 'example-app',
+        },
+      };
+      const opts = { filename: filePath, root: appRoot };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath for addon app tests', () => {
+      const filePath = `${appRoot}/tests/acceptance/foo-test.js`;
+      const expectedPath = `tests/acceptance/foo-test.js`;
+      const config = {
+        pkg: {
+          name: 'example-app',
+        },
+      };
+      config.pkg['ember-addon'] = {
+        paths: ['lib/bar'],
+      };
+      const opts = { filename: filePath, root: appRoot };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath with the addon name for addon tests', () => {
+      const filePath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/foo-test.js`;
+      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`;
+      const config = {
+        pkg: {
+          name: 'example-app',
+        },
+      };
+      config.pkg['ember-addon'] = {
+        paths: ['lib/bar'],
+      };
+      const opts = { filename: filePath, root: appRoot };
+
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
   });
 });

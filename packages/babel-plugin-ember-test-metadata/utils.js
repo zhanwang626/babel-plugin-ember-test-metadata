@@ -1,3 +1,10 @@
+const {
+  _getRelativePathForClassic,
+  _getRelativePathForClassicInRepo,
+  _getRelativePathForEmbroider,
+  _getRelativePathForEmbroiderInRepo,
+} = require('./get-relative-paths');
+
 const path = require('path');
 
 /**
@@ -56,28 +63,6 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
-function _getParsedClassicFilepath(pathSegments, projectConfiguration) {
-  const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
-
-  pathSegments.splice(
-    0,
-    pathSegments.indexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
-  );
-
-  return pathSegments.join(path.sep);
-}
-
-function _getParsedEmbroiderFilepath(pathSegments) {
-  const RELATIVE_PATH_ROOT = 2;
-
-  // A typical Embroider pathSegments array would look something like:
-  // ['private', 'var', 'some-hash', 'embroider', 'another-hash', 'tests', 'acceptance', ...]
-  // This strips everything from the first segment up to and including 'another-hash',
-  pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
-
-  return pathSegments.join(path.sep);
-}
-
 /**
  * Get a normalized file path, based on whether the app build is classic or with Embroider
  * @param {object} fileOpts Babel state.file.opts which include root and filename props
@@ -85,19 +70,32 @@ function _getParsedEmbroiderFilepath(pathSegments) {
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
 function getNormalizedFilePath(fileOpts, projectConfiguration) {
-  let { root, filename } = fileOpts;
-  const pathSegments = filename.split(path.sep);
-  const isEmbroider = pathSegments.includes('embroider');
+  let { filename, root } = fileOpts;
+  const isEmbroider = filename.includes('embroider');
+  const projectName = projectConfiguration.pkg.name;
 
-    filename = isEmbroider ? _getParsedEmbroiderFilepath(pathSegments) : _getParsedClassicFilepath(pathSegments, projectConfiguration);
+  if (!isEmbroider) {
+    if (filename.includes('ember-add-in-repo-tests')) {
+      return _getRelativePathForClassicInRepo(filename);
+    }
 
-  return path.relative(root, filename);
+    return _getRelativePathForClassic(filename, projectName);
+  } else {
+    const rootDirWithBase = path.join(path.parse(root).dir, path.parse(root).base);
+    if (filename.includes(rootDirWithBase)) {
+      filename = filename.replace(rootDirWithBase, '');
+    }
+
+    if (filename.includes('ember-add-in-repo-tests')) {
+      return _getRelativePathForEmbroiderInRepo(filename);
+    }
+
+    return _getRelativePathForEmbroider(filename);
+  }
 }
 
 module.exports = {
   getNodeProperty,
   getNormalizedFilePath,
   getProjectConfiguration,
-  _getParsedClassicFilepath,
-  _getParsedEmbroiderFilepath,
 };
