@@ -77,10 +77,8 @@ function _getClassicPathWithAddon(preformattedPath, projectName, addons) {
   }
 }
 
-const RELATIVE_PATH_ROOT = 2;
-
 function _getEmbroiderPath(pathSegments) {
-  pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
+  pathSegments.splice(0, pathSegments.lastIndexOf('tests'));
   return pathSegments.join(path.sep);
 }
 
@@ -90,7 +88,9 @@ function _getEmbroiderPathWithAddon(pathSegments, addons) {
 
   if (pathSegments.includes(addonName)) {
     pathSegments.splice(0, pathSegments.lastIndexOf(addonName) + 1);
-    return `lib/${addonName}/tests/${pathSegments.join('/')}`;
+    const hasTestsPrefix = pathSegments[0] === "tests";
+    const addonPrefix = `lib/${addonName}`;
+    return [addonPrefix, hasTestsPrefix ? pathSegments.join('/') : `tests/${pathSegments.join('/')}`].join('/');
   } else {
     return _getEmbroiderPath(pathSegments);
   }

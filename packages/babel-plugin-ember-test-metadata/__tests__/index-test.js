@@ -43,7 +43,7 @@ pluginTester({
         'temp-test-123',
         'embroider',
         '123456',
-        'pathtest',
+        'tests',
         'embroider-prefix-test.js'
       ),
     },

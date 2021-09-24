@@ -95,7 +95,7 @@ describe('getNormalizedFilePath', () => {
 
     it("returns the normalized filepath for app tests", () => {
       const expectedPath = `tests/acceptance/foo-test.js`
-      const preFormattedPath = `/private/var/folders/abcdefg1234/T/embroider/098765/tests/acceptance/foo-test.js`;
+      const preFormattedPath = `${appRoot}/tests/acceptance/foo-test.js`;
       const config = {
         pkg: {
           name: "example-app",
@@ -108,41 +108,41 @@ describe('getNormalizedFilePath', () => {
       expect(formattedPath).toBe(expectedPath);
     });
 
-  it("returns the normalized filepath for addon app tests", () => {
-    const expectedPath = `tests/acceptance/foo-test.js`
-    const preFormattedPath = `/private/var/folders/abcdefg1234/T/embroider/098765/tests/acceptance/foo-test.js`;
-    const config = {
-      pkg: {
-        name: "example-app",
-      },
-    }
-    config.pkg['ember-addon'] = {
-      paths: ["lib/bar"]
-    }
-    const opts = { filename: preFormattedPath, root: appRoot };
+    it("returns the normalized filepath for addon app tests", () => {
+      const expectedPath = `tests/acceptance/foo-test.js`
+      const preFormattedPath = `${appRoot}/tests/acceptance/foo-test.js`;
+      const config = {
+        pkg: {
+          name: "example-app",
+        },
+      }
+      config.pkg['ember-addon'] = {
+        paths: ["lib/bar"]
+      }
+      const opts = { filename: preFormattedPath, root: appRoot };
 
-    const formattedPath = getNormalizedFilePath(opts, config);
+      const formattedPath = getNormalizedFilePath(opts, config);
 
-    expect(formattedPath).toBe(expectedPath);
+      expect(formattedPath).toBe(expectedPath);
+    });
+
+    it("returns the normalized filepath with the addon name for addon tests", () => {
+      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`
+      const preFormattedPath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/acceptance/foo-test.js`;
+      const config = {
+        pkg: {
+          name: "example-app",
+        },
+      }
+      config.pkg['ember-addon'] = {
+        paths: ["lib/bar"]
+      }
+      const opts = { filename: preFormattedPath, root: appRoot };
+
+      const formattedPath = getNormalizedFilePath(opts, config);
+
+      expect(formattedPath).toBe(expectedPath);
+    });
   });
 
-  it("returns the normalized filepath with the addon name for addon tests", () => {
-    const expectedPath = `lib/bar/tests/acceptance/foo-test.js`
-    const preFormattedPath = `/private/var/folders/abcdefg1234/T/embroider/098765/tests/ember-add-in-repo-tests/lib/bar/acceptance/foo-test.js`;
-    const config = {
-      pkg: {
-        name: "example-app",
-      },
-    }
-    config.pkg['ember-addon'] = {
-      paths: ["lib/bar"]
-    }
-    const opts = { filename: preFormattedPath, root: appRoot };
-
-    const formattedPath = getNormalizedFilePath(opts, config);
-
-    expect(formattedPath).toBe(expectedPath);
-  });
 });
-
-  });

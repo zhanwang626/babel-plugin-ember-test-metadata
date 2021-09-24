@@ -23,7 +23,7 @@ import { click, getTestMetadata } from '@ember/test-helpers';
 module('Acceptance | example test embroider prefix', function (hooks) {
   hooks.beforeEach(function () {
     let testMetadata = getTestMetadata(QUnit.config.current.testEnvironment);
-    testMetadata.filePath = 'pathtest/embroider-prefix-test.js';
+    testMetadata.filePath = 'tests/embroider-prefix-test.js';
   });
   hooks.beforeEach(function () {
     // noop
