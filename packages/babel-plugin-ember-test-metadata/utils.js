@@ -74,13 +74,15 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
 
   if (!isEmbroider) {
     if (filename.includes('ember-add-in-repo-tests')) {
-      return _getRelativePathForClassicInRepo(filename, projectName);
+      return _getRelativePathForClassicInRepo(filename);
     }
+
     return _getRelativePathForClassic(filename, projectName);
   } else {
     if (filename.includes('ember-add-in-repo-tests')) {
       return _getRelativePathForEmbroiderInRepo(filename);
     }
+
     return _getRelativePathForEmbroider(filename);
   }
 }
