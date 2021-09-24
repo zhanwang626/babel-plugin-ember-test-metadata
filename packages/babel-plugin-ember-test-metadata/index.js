@@ -27,6 +27,7 @@ function addMetadata({ types: t }) {
         if (!state.opts.enabled) return;
 
         const { filename } = state.file.opts;
+
         state.opts.shouldLoadFile = shouldLoadFile(filename);
 
         if (!state.opts.shouldLoadFile) return;
@@ -104,10 +105,10 @@ function addMetadata({ types: t }) {
           ),
         ]);
 
-        const relativeFilePath = getNormalizedFilePath(
-          state.file.opts,
-          state.opts.projectConfiguration
-        );
+        const relativeFilePath = getNormalizedFilePath({
+          ...state.file.opts,
+          ...state.opts,
+        });
 
         const testMetadataAssignment = t.expressionStatement(
           t.assignmentExpression(
