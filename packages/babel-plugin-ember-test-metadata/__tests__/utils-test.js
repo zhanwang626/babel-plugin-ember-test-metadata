@@ -1,29 +1,4 @@
-const { getNodeProperty, getNormalizedFilePath } = require('../utils');
-
-describe('getNodeProperty', () => {
-  it('returns property as expected', () => {
-    const mockNode = {
-      system: {
-        settings: {
-          volume: {
-            level: 11,
-          },
-        },
-      },
-    };
-
-    expect(getNodeProperty(mockNode, 'system.settings.volume.level')).toEqual(11);
-    expect(getNodeProperty(mockNode.system.settings, 'volume.level')).toEqual(11);
-    expect(getNodeProperty(mockNode, 'unknown.leaf.property')).toEqual(undefined);
-  });
-
-  it('returns early if no node is provided', () => {
-    let emptyNode;
-    expect(getNodeProperty(emptyNode, 'volume.level')).toEqual(undefined);
-    expect(getNodeProperty(null, 'volume.level')).toEqual(undefined);
-    expect(getNodeProperty({}, 'volume.level')).toEqual(undefined);
-  });
-});
+const { getNormalizedFilePath } = require('../utils');
 
 describe('getNormalizedFilePath', () => {
   describe('classic', () => {

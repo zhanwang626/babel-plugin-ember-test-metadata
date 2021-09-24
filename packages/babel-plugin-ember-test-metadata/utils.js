@@ -8,38 +8,6 @@ const {
 const path = require('path');
 
 /**
- * Utility to get a property from a given path
- * @param {object} node
- * @param {string} path
- * @returns property value
- */
-function getNodeProperty(node, path) {
-  if (!node) {
-    return;
-  }
-
-  let parts;
-  if (typeof path === 'string') {
-    parts = path.split('.');
-  } else {
-    parts = path;
-  }
-
-  if (parts.length === 1) {
-    return node[path];
-  }
-
-  let property = node[parts[0]];
-
-  if (property && parts.length > 1) {
-    parts.shift();
-    return getNodeProperty(property, parts);
-  }
-
-  return property;
-}
-
-/**
  * Function to parse defaults.project and only return info to be used by the plugin
  * @param {object} project Ember defaults.project
  * @param {string} project.pkg - The package of the parent project.
@@ -95,7 +63,6 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
 }
 
 module.exports = {
-  getNodeProperty,
   getNormalizedFilePath,
   getProjectConfiguration,
 };
