@@ -20,7 +20,7 @@ module.exports = function (defaults) {
           require.resolve('babel-plugin-ember-test-metadata'),
           {
             enabled: true,
-            projectConfiguration: getProjectConfiguration(defaults.project)
+            packageName: defaults.project.pkg.name,
           }
         ]
       ],
@@ -73,7 +73,8 @@ module.exports = function (defaults) {
           require.resolve('babel-plugin-ember-test-metadata'),
           {
             enabled: true,
-            projectConfiguration: getProjectConfiguration(defaults.project)
+            packageName: defaults.project.pkg.name,
+            isUsingEmbroider: true,
            }
         ]
       ],
