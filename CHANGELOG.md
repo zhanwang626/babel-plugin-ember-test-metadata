@@ -1,3 +1,35 @@
+## v2.0.0-beta.0 (2021-09-24)
+
+#### :boom: Breaking Change
+* `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#44](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/44) Adds config for package name and if running under embroider ([@scalvert](https://github.com/scalvert))
+
+#### :rocket: Enhancement
+* `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#42](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/42) Add util test cases for different path scenarios ([@ckundo](https://github.com/ckundo))
+
+#### :bug: Bug Fix
+* `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#39](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/39) Fix file paths for CLASSIC Ember builds ([@glnster](https://github.com/glnster))
+
+#### :house: Internal
+* `babel-plugin-ember-test-metadata`
+  * [#43](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/43) Removes custom object path util in favor of object-path ([@scalvert](https://github.com/scalvert))
+  * [#36](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/36) Removes unnecessary babel transpilation ([@scalvert](https://github.com/scalvert))
+  * [#33](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/33) Converting to monorepo ([@scalvert](https://github.com/scalvert))
+* `test-scenarios`
+  * [#38](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/38) Add in repo test scenarios ([@scalvert](https://github.com/scalvert))
+* `app-template`, `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#35](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/35) Adding test-scenarios package for acceptance-style tests ([@scalvert](https://github.com/scalvert))
+* `app-template`
+  * [#34](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/34) Adding app template to test plugin with ember applications ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 3
+- Cameron Cundiff ([@ckundo](https://github.com/ckundo))
+- Glenn Cueto ([@glnster](https://github.com/glnster))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
 ## v1.2.3 (2021-09-01)
 
 #### :rocket: Enhancement
