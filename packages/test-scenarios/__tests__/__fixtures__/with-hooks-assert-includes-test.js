@@ -7,8 +7,6 @@ module('Acceptance | with-hooks-test', function (hooks) {
   });
 
   test('example', async function (assert) {
-    const matcher = /^tests\/unit\/with-hooks-assert-includes-test\.js$/g;
-
-    assert.notEqual(getTestMetadata(this).filePath.match(matcher), null);
+    assert.equal(getTestMetadata(this).filePath, 'tests/unit/with-hooks-assert-includes-test.js');
   });
 });

@@ -63,6 +63,7 @@ async function embroider(project) {
     'ember-cli-build.js': `'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
@@ -70,7 +71,10 @@ module.exports = function (defaults) {
       plugins: [
         [
           require.resolve('babel-plugin-ember-test-metadata'),
-          { enabled: true }
+          {
+            enabled: true,
+            projectConfiguration: getProjectConfiguration(defaults.project)
+           }
         ]
       ],
     }

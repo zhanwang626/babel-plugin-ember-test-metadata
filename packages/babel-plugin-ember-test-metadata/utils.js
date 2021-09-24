@@ -5,6 +5,8 @@ const {
   _getRelativePathForEmbroiderInRepo,
 } = require('./get-relative-paths');
 
+const path = require('path');
+
 /**
  * Utility to get a property from a given path
  * @param {object} node
@@ -68,7 +70,7 @@ function getProjectConfiguration(project) {
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
 function getNormalizedFilePath(fileOpts, projectConfiguration) {
-  let { filename } = fileOpts;
+  let { filename, root } = fileOpts;
   const isEmbroider = filename.includes('embroider');
   const projectName = projectConfiguration.pkg.name;
 
@@ -79,6 +81,11 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
 
     return _getRelativePathForClassic(filename, projectName);
   } else {
+    const rootDirWithBase = path.join(path.parse(root).dir, path.parse(root).base);
+    if (filename.includes(rootDirWithBase)) {
+      filename = filename.replace(rootDirWithBase, '');
+    }
+
     if (filename.includes('ember-add-in-repo-tests')) {
       return _getRelativePathForEmbroiderInRepo(filename);
     }
