@@ -12,7 +12,6 @@ describe('getNormalizedFilePath', () => {
         filename: filePath,
         root: '/Users/tester/workspace/personal/test-bed/classic',
         packageName: 'classic',
-        isUsingEmbroider: false,
       };
 
       const normalizedFilePath = getNormalizedFilePath(opts);
@@ -28,7 +27,6 @@ describe('getNormalizedFilePath', () => {
         filename: filePath,
         root: '/Users/tester/workspace/personal/test-bed/classic',
         packageName: 'classic',
-        isUsingEmbroider: false,
       };
 
       const normalizedFilePath = getNormalizedFilePath(opts);
@@ -43,7 +41,6 @@ describe('getNormalizedFilePath', () => {
         filename: filePath,
         root: appRoot,
         packageName: 'classic',
-        isUsingEmbroider: false,
       };
 
       const normalizedFilePath = getNormalizedFilePath(opts);

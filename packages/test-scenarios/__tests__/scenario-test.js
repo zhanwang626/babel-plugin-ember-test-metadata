@@ -21,7 +21,6 @@ module.exports = function (defaults) {
           {
             enabled: true,
             packageName: defaults.project.pkg.name,
-            isUsingEmbroider: false,
           }
         ]
       ],

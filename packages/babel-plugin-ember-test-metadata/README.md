@@ -41,6 +41,34 @@ module.exports = function (defaults) {
           {
             enabled: !!process.env.BABEL_TEST_METADATA,
             packageName: defaults.project.pkg.name,
+          },
+        ],
+      ],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+```
+
+If you're using Embroider instead of Ember CLI, you need to tell the plugin how to process the file paths:
+
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: !!process.env.BABEL_TEST_METADATA,
+            packageName: defaults.project.pkg.name,
             isUsingEmbroider: true,
           },
         ],

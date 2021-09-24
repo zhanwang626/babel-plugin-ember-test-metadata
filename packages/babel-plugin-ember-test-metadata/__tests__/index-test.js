@@ -9,7 +9,6 @@ pluginTester({
   pluginOptions: {
     enabled: true,
     packageName: 'packages/babel-plugin-ember-test-metadata',
-    isUsingEmbroider: false,
   },
   tests: [
     {
