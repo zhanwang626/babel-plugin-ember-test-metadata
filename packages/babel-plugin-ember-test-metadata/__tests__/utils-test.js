@@ -1,7 +1,4 @@
-const {
-  getNodeProperty,
-  getNormalizedFilePath,
-} = require('../utils');
+const { getNodeProperty, getNormalizedFilePath } = require('../utils');
 
 describe('getNodeProperty', () => {
   it('returns property as expected', () => {
@@ -15,134 +12,135 @@ describe('getNodeProperty', () => {
       },
     };
 
-    expect(getNodeProperty(mockNode, 'system.settings.volume.level')).toBe(11);
-    expect(getNodeProperty(mockNode.system.settings, 'volume.level')).toBe(11);
-    expect(getNodeProperty(mockNode, 'unknown.leaf.property')).toBe(undefined);
+    expect(getNodeProperty(mockNode, 'system.settings.volume.level')).toEqual(11);
+    expect(getNodeProperty(mockNode.system.settings, 'volume.level')).toEqual(11);
+    expect(getNodeProperty(mockNode, 'unknown.leaf.property')).toEqual(undefined);
   });
 
   it('returns early if no node is provided', () => {
     let emptyNode;
-    expect(getNodeProperty(emptyNode, 'volume.level')).toBe(undefined);
-    expect(getNodeProperty(null, 'volume.level')).toBe(undefined);
-    expect(getNodeProperty({}, 'volume.level')).toBe(undefined);
+    expect(getNodeProperty(emptyNode, 'volume.level')).toEqual(undefined);
+    expect(getNodeProperty(null, 'volume.level')).toEqual(undefined);
+    expect(getNodeProperty({}, 'volume.level')).toEqual(undefined);
   });
 });
 
 describe('getNormalizedFilePath', () => {
-  let appRoot;
+  describe('given file path from a classic build', () => {
+    const appRoot = '/Users/tester/workspace/personal/test-bed/classic';
 
-  describe("given file path from a classic build", () => {
-    beforeEach(() => {
-      appRoot = "/Users/tester/workspace/personal/test-bed/classic";
-    });
-
-    it("returns the normalized filepath", () => {
-      const expectedPath = "tests/acceptance/foo-test.js";
-      const preFormattedPath = "/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js";
-      const opts = { filename: preFormattedPath, root: "/Users/tester/workspace/personal/test-bed/classic" };
+    it('returns the normalized filepath', () => {
+      const filePath =
+        '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
+      const expectedPath = 'tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: '/Users/tester/workspace/personal/test-bed/classic',
+      };
       const config = {
         pkg: {
-          name: "classic"
+          name: 'classic',
         },
-      }
+      };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it("returns the normalized filepath for the in app test", () => {
-      const expectedPath = "tests/acceptance/foo-test.js";
-      const preFormattedPath = "/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js";
-      const opts = { filename: preFormattedPath, root: "/Users/tester/workspace/personal/test-bed/classic" };
+    it('returns the normalized filepath for the in app test', () => {
+      const filePath =
+        '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
+      const expectedPath = 'tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: '/Users/tester/workspace/personal/test-bed/classic',
+      };
       const config = {
         pkg: {
-          name: "classic"
+          name: 'classic',
         },
-      }
+      };
       config.pkg['ember-addon'] = {
-        paths: ['lib/bar']
-      }
+        paths: ['lib/bar'],
+      };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it("returns the normalized filepath with the addon name", () => {
-      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`
-      const preFormattedPath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/foo-test.js`;
-      const opts = { filename: preFormattedPath, root: appRoot };
+    it('returns the normalized filepath with the addon name', () => {
+      const filePath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/foo-test.js`;
+      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`;
+      const opts = { filename: filePath, root: appRoot };
       const config = {
         pkg: {
-          name: "classic"
+          name: 'classic',
         },
-      }
+      };
       config.pkg['ember-addon'] = {
-        paths: ['lib/bar']
-      }
+        paths: ['lib/bar'],
+      };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
   });
 
-  describe("given file path from an embroider build", () => {
-    beforeEach(() => {
-      appRoot = '/private/var/folders/abcdefg1234/T/embroider/098765';
-    });
+  describe('given file path from an embroider build', () => {
+    const appRoot = '/private/var/folders/abcdefg1234/T/embroider/098765';
 
-    it("returns the normalized filepath for app tests", () => {
-      const expectedPath = `tests/acceptance/foo-test.js`
-      const preFormattedPath = `${appRoot}/tests/acceptance/foo-test.js`;
+    it('returns the normalized filepath for app tests', () => {
+      const expectedPath = `tests/acceptance/foo-test.js`;
+      const filePath = `${appRoot}/tests/acceptance/foo-test.js`;
       const config = {
         pkg: {
-          name: "example-app",
+          name: 'example-app',
         },
-      }
-      const opts = { filename: preFormattedPath, root: appRoot };
+      };
+      const opts = { filename: filePath, root: appRoot };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it("returns the normalized filepath for addon app tests", () => {
-      const expectedPath = `tests/acceptance/foo-test.js`
-      const preFormattedPath = `${appRoot}/tests/acceptance/foo-test.js`;
+    it('returns the normalized filepath for addon app tests', () => {
+      const filePath = `${appRoot}/tests/acceptance/foo-test.js`;
+      const expectedPath = `tests/acceptance/foo-test.js`;
       const config = {
         pkg: {
-          name: "example-app",
+          name: 'example-app',
         },
-      }
+      };
       config.pkg['ember-addon'] = {
-        paths: ["lib/bar"]
-      }
-      const opts = { filename: preFormattedPath, root: appRoot };
+        paths: ['lib/bar'],
+      };
+      const opts = { filename: filePath, root: appRoot };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it("returns the normalized filepath with the addon name for addon tests", () => {
-      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`
-      const preFormattedPath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/acceptance/foo-test.js`;
+    it('returns the normalized filepath with the addon name for addon tests', () => {
+      const filePath = `${appRoot}/tests/ember-add-in-repo-tests/lib/bar/tests/acceptance/foo-test.js`;
+      const expectedPath = `lib/bar/tests/acceptance/foo-test.js`;
       const config = {
         pkg: {
-          name: "example-app",
+          name: 'example-app',
         },
-      }
+      };
       config.pkg['ember-addon'] = {
-        paths: ["lib/bar"]
-      }
-      const opts = { filename: preFormattedPath, root: appRoot };
+        paths: ['lib/bar'],
+      };
+      const opts = { filename: filePath, root: appRoot };
 
-      const formattedPath = getNormalizedFilePath(opts, config);
+      const normalizedFilePath = getNormalizedFilePath(opts, config);
 
-      expect(formattedPath).toBe(expectedPath);
+      expect(normalizedFilePath).toEqual(expectedPath);
     });
   });
-
 });
