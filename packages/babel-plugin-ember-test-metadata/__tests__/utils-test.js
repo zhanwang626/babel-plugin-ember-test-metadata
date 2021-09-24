@@ -26,7 +26,7 @@ describe('getNodeProperty', () => {
 });
 
 describe('getNormalizedFilePath', () => {
-  describe('given file path from a classic build', () => {
+  describe('classic', () => {
     const appRoot = '/Users/tester/workspace/personal/test-bed/classic';
 
     it('returns the normalized filepath', () => {
@@ -89,7 +89,7 @@ describe('getNormalizedFilePath', () => {
     });
   });
 
-  describe('given file path from an embroider build', () => {
+  describe('embroider', () => {
     const appRoot = '/private/var/folders/abcdefg1234/T/embroider/098765';
 
     it('returns the normalized filepath for app tests', () => {
