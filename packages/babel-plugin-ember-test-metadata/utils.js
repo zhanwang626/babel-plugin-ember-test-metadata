@@ -56,6 +56,46 @@ function getProjectConfiguration(project) {
   return parsedProjectConfiguration;
 }
 
+function _getClassicPath(preformattedPath, projectName) {
+  const formattedPath = preformattedPath
+    .slice(preformattedPath.lastIndexOf(projectName), preformattedPath.length)
+    .replace(`${projectName}/`, '');
+
+  return formattedPath;
+}
+
+function _getClassicPathWithAddon(preformattedPath, projectName, addons) {
+  const pathSegments = preformattedPath.split(path.sep);
+  const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
+  const addonName = addonNames.find(name => pathSegments.includes(name));
+
+  if (pathSegments.includes(addonName)) {
+    pathSegments.splice(0, pathSegments.indexOf("ember-add-in-repo-tests") + 1);
+    return [...pathSegments].join(path.sep)
+  } else {
+    return _getClassicPath(preformattedPath, projectName);
+  }
+}
+
+const RELATIVE_PATH_ROOT = 2;
+
+function _getEmbroiderPath(pathSegments) {
+  pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
+  return pathSegments.join(path.sep);
+}
+
+function _getEmbroiderPathWithAddon(pathSegments, addons) {
+  const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
+  const addonName = addonNames.find(name => pathSegments.includes(name));
+
+  if (pathSegments.includes(addonName)) {
+    pathSegments.splice(0, pathSegments.lastIndexOf(addonName) + 1);
+    return `lib/${addonName}/tests/${pathSegments.join('/')}`;
+  } else {
+    return _getEmbroiderPath(pathSegments);
+  }
+}
+
 /**
  * Get a normalized file path, based on whether the app build is classic or with Embroider
  * @param {object} fileOpts Babel state.file.opts which include root and filename props
@@ -68,56 +108,17 @@ function getNormalizedFilePath(fileOpts, projectConfiguration) {
   const isEmbroider = pathSegments.includes('embroider');
   const addons = projectConfiguration.pkg["ember-addon"];
   const hasAddons = addons && addons.paths;
-  const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
-
-  let result;
+  const projectName = projectConfiguration.pkg.name;
 
   if (!isEmbroider && !hasAddons) {
-    pathSegments.splice(
-      0,
-      pathSegments.lastIndexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
-    );
-
-    result = pathSegments.join(path.sep);
+    return _getClassicPath(filename, projectName);
   } else if (!isEmbroider && hasAddons) {
-    const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
-    const addonName = addonNames.find(name => pathSegments.includes(name));
-
-    if (pathSegments.includes(addonName)) {
-      pathSegments.splice(0, pathSegments.indexOf("ember-add-in-repo-tests") + 1);
-      result = [...pathSegments].join(path.sep)
-    } else {
-      const projectNamePathSeparators = projectConfiguration.pkg.name.split(path.sep);
-      pathSegments.splice(
-        0,
-        pathSegments.lastIndexOf(projectNamePathSeparators[0]) + projectNamePathSeparators.length
-      );
-      result = pathSegments.join(path.sep);
-    }
+    return _getClassicPathWithAddon(filename, projectName, addons);
   } else if (isEmbroider && !hasAddons) {
-    const RELATIVE_PATH_ROOT = 2;
-    pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
-
-    result = pathSegments.join(path.sep);
+    return _getEmbroiderPath(pathSegments);
   } else if (isEmbroider && hasAddons) {
-    const addonNames = addons.paths.map(addonPath => addonPath.split(path.sep)[1]);
-    const addonName = addonNames.find(name => pathSegments.includes(name));
-
-    if (pathSegments.includes(addonName)) {
-      pathSegments.splice(0, pathSegments.lastIndexOf(addonName) + 1);
-
-
-
-      result = ['lib', addonName, "tests", ...pathSegments].join(path.sep)
-    } else {
-      const RELATIVE_PATH_ROOT = 2;
-      pathSegments.splice(0, pathSegments.lastIndexOf('embroider') + RELATIVE_PATH_ROOT);
-
-      result = pathSegments.join(path.sep);
-    }
+    return _getEmbroiderPathWithAddon(pathSegments, addons);
   }
-
-  return result;
 }
 
 module.exports = {
