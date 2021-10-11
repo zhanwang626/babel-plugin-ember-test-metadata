@@ -1,5 +1,5 @@
 const objectPath = require('object-path');
-const { getNormalizedFilePath } = require('./utils.js');
+const { getNormalizedFilePath } = require('./get-normalized-file-path');
 
 /**
  * Checks for files ending with "-test.js" or "_test.js"

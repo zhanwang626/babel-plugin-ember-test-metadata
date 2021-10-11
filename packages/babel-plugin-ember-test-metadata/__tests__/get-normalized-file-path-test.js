@@ -1,4 +1,4 @@
-const { getNormalizedFilePath } = require('../utils');
+const { getNormalizedFilePath } = require('../get-normalized-file-path');
 
 describe('getNormalizedFilePath', () => {
   describe('classic', () => {
