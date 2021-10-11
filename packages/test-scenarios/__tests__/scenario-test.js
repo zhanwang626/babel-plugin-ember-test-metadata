@@ -10,7 +10,6 @@ async function classic(project) {
     'ember-cli-build.js': `'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
@@ -63,7 +62,6 @@ async function embroider(project) {
     'ember-cli-build.js': `'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-const { getProjectConfiguration } = require('babel-plugin-ember-test-metadata/utils');
 
 module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
