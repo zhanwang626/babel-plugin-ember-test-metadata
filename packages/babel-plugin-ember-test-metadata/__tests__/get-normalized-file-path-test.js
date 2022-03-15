@@ -4,13 +4,44 @@ describe('getNormalizedFilePath', () => {
   describe('classic', () => {
     const appRoot = '/Users/tester/workspace/personal/test-bed/classic';
 
-    it('returns the normalized filepath', () => {
+    it('returns the normalized filepath with a duplicate path segment and source file name', () => {
+      const filePath = '/Users/tester/workspace/personal/test-bed/classic/extended/extended/tests/acceptance/foo-test.js';
+      const expectedPath = 'extended/tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        sourceFileName: 'extended/tests/acceptance/foo-test.js',
+        root: '/Users/tester/workspace/personal/test-bed/classic/extended',
+        packageName: 'classic',
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath with a relative sourceFileName', () => {
       const filePath =
         '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
       const expectedPath = 'tests/acceptance/foo-test.js';
       const opts = {
         filename: filePath,
-        root: '/Users/tester/workspace/personal/test-bed/classic',
+        root: '/Users/tester/workspace/personal/test-bed/classic/classic',
+        sourceFileName: 'tests/acceptance/foo-test.js',
+        packageName: 'classic',
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+
+    it('returns the normalized filepath with no sourceFileName', () => {
+      const filePath =
+        '/Users/tester/workspace/personal/test-bed/classic/classic/tests/acceptance/foo-test.js';
+      const expectedPath = 'tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: '/Users/tester/workspace/personal/test-bed/classic/classic',
         packageName: 'classic',
       };
 
