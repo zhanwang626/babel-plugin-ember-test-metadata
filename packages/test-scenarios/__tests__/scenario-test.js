@@ -203,3 +203,72 @@ Scenarios.fromProject(workspacesBaseApp)
       })
     })
   });
+
+function nonStandardWorkspacesApp() {
+  // eslint-disable-next-line node/no-unpublished-require
+  const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/nonstandard-workspaces-template/package.json'));
+  return Project.fromDir(dir, { linkDeps: true })
+}
+
+
+async function nonStandardWorkspace(project) {
+  merge(project.files, {
+    packages: {
+      'nonstandard-workspaces-app': {
+        'ember-cli-build.js': `'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: true,
+            packageName: defaults.project.pkg.name,
+          }
+        ]
+      ],
+    }
+  });
+
+  return app.toTree();
+};
+`,
+        tests: {
+          unit: getTestFiles(
+            'with-hooks-test.js',
+            'without-hooks-test.js',
+            'with-multiple-modules-test.js'
+          ),
+        },
+      }
+    }
+  });
+}
+
+Scenarios.fromProject(nonStandardWorkspacesApp)
+  .expand({ nonStandardWorkspace })
+  .map('app scenarios', (project) => {
+    project.linkDependency('babel-plugin-ember-test-metadata', {
+      baseDir: __dirname,
+    });
+  }).
+  forEachScenario((scenario) => {
+    describe(scenario.name, () => {
+      let app;
+
+      beforeAll(async () => {
+        app = await scenario.prepare();
+      });
+
+      it('runs tests', async () => {
+        let { output } = await app.execute('node ./node_modules/ember-cli/bin/ember test');
+
+        expect(output).toMatch('# tests 5');
+        expect(output).toMatch('# pass  5');
+      })
+    })
+  });
