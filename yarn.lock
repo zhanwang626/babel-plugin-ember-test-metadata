@@ -5484,15 +5484,10 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001254:
-  version "1.0.30001255"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001255.tgz#f3b09b59ab52e39e751a569523618f47c4298ca0"
-  integrity sha512-F+A3N9jTZL882f/fg/WWVnKSu6IOo3ueLz4zwaOPbPYHNmM/ZaDUyzyJwS1mZhX7Ex5jqTyW599Gdelh5PDYLQ==
-
-caniuse-lite@^1.0.30001219:
-  version "1.0.30001234"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001234.tgz#8fc2e709e3b0679d7af7f073a1c661155c39b975"
-  integrity sha512-a3gjUVKkmwLdNysa1xkUAwN2VfJUJyVW47rsi3aCbkRCtbHAfo+rOsCqVw29G6coQ8gzAPb5XBXwiGHwme3isA==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001254:
+  version "1.0.30001355"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001355.tgz"
+  integrity sha512-Sd6pjJHF27LzCB7pT7qs+kuX2ndurzCzkpJl6Qct7LPSZ9jn0bkOA8mdgMgmqnQAWLVOOGjLpc+66V57eLtb1g==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -6601,10 +6596,10 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-ember-add-in-repo-tests@2.0.0-beta.0:
-  version "2.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/ember-add-in-repo-tests/-/ember-add-in-repo-tests-2.0.0-beta.0.tgz#f4761ed45ef8d0758be105ea2bb1a6b0bee21e26"
-  integrity sha512-dFWEBlq+/Iwj3KbwjcGwHIFEu++uOuxFB16CRwaEPwk0xTIts94X2xx+Z3Af1CTXZAIYz8oJqQ+135QwvhtPQA==
+ember-add-in-repo-tests@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ember-add-in-repo-tests/-/ember-add-in-repo-tests-2.0.0.tgz#13b964d70eace9dd498c8d01a7442b25b4aa8544"
+  integrity sha512-h2M/IbCwQsChDiDdRn5BJsV7W6xiq85hdnjhuDj3q6OEYjxJGGqwHj8seBrLTpENOVZh0Is8Gwg2sE2sZ2TSvg==
   dependencies:
     broccoli-funnel "^3.0.8"
     broccoli-merge-trees "^4.2.0"
