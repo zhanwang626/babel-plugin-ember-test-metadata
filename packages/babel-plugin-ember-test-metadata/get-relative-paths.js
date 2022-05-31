@@ -1,24 +1,56 @@
-const path = require('path');
+const { basename, join, resolve, sep } = require('path');
 
-function _getRelativePathForClassic(filePath, projectName) {
-  return filePath
-    .slice(filePath.lastIndexOf(projectName), filePath.length)
-    .replace(`${projectName}/`, '');
+function _getNormalizedPackageDir(packageName) {
+  const segments = packageName.split('/');
+  return segments[segments.length - 1];
+}
+
+function _getRelativeProjectPath(pathSegments, projectDir, projectRoot) {
+  const appRoot = pathSegments.slice(0, pathSegments.indexOf(projectDir) + 1);
+  const projectBaseDir = basename(resolve(appRoot.join(sep), projectRoot));
+
+  return appRoot.slice(appRoot.indexOf(projectBaseDir) + 1).join(sep);
+}
+
+function _getRelativePathForClassic(filePath, packageName, projectRoot) {
+  const projectDir = _getNormalizedPackageDir(packageName);
+  const pathSegments = filePath.split(sep);
+  const testFilePath = pathSegments
+    .slice(pathSegments.lastIndexOf(projectDir) + 1)
+    .join(sep);
+
+  if (!projectRoot) {
+    return testFilePath;
+  }
+
+  const projectPath = _getRelativeProjectPath(pathSegments, projectDir, projectRoot);
+  return join(projectPath, testFilePath);
 }
 
 function _getRelativePathForClassicInRepo(filePath) {
-  const pathSegments = filePath.split(path.sep);
-
+  const pathSegments = filePath.split(sep);
   return pathSegments
-    .splice(pathSegments.indexOf('ember-add-in-repo-tests') + 1, pathSegments.length)
-    .join(path.sep);
+    .slice(pathSegments.indexOf('ember-add-in-repo-tests') + 1)
+    .join(sep);
 }
 
-function _getRelativePathForEmbroider(filePath) {
-  const pathSegments = filePath.split(path.sep);
-  return pathSegments
-    .splice(pathSegments.indexOf('embroider') + 2, pathSegments.length)
-    .join(path.sep);
+function _getRelativePathForEmbroider(filePath, packageName, projectRoot) {
+  const pathSegments = filePath.split(sep);
+  const testFilePath = pathSegments
+    .slice(pathSegments.indexOf('embroider') + 2)
+    .join(sep);
+
+  if (!projectRoot) {
+    return testFilePath;
+  }
+
+  const projectDir = _getNormalizedPackageDir(packageName);
+  const projectPath = _getRelativeProjectPath(pathSegments, projectDir, projectRoot);
+  const startIndex = projectPath
+    ? testFilePath.indexOf(projectPath)
+    : testFilePath.indexOf(projectDir) + projectDir.length + 1;
+
+  return testFilePath.slice(startIndex);
 }
 
 function _getRelativePathForEmbroiderInRepo(filePath) {

@@ -83,3 +83,32 @@ module.exports = function (defaults) {
 ```
 
 Set the environment variable `BABEL_TEST_METADATA=true` to enable the plugin to perform its transformations.
+
+You can additionally pass in a `projectRoot` relative path to the options to accommodate more complex project structures like workspaces.
+
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: !!process.env.BABEL_TEST_METADATA,
+            packageName: defaults.project.pkg.name,
+            packageRoot: '../..',
+          },
+        ],
+      ],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+```
