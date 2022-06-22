@@ -1,7 +1,11 @@
 const { basename, join, resolve, sep } = require('path');
 
-function _getRelativeProjectPath(filePath, projectDir, projectRoot) {
-  const pathSegments = filePath.split(sep);
+function _getNormalizedPackageDir(packageName) {
+  const segments = packageName.split('/');
+  return segments[segments.length - 1];
+}
+
+function _getRelativeProjectPath(pathSegments, projectDir, projectRoot) {
   const appRoot = pathSegments.slice(0, pathSegments.indexOf(projectDir) + 1);
   const projectBaseDir = basename(resolve(appRoot.join(sep), projectRoot));
 
@@ -9,7 +13,7 @@ function _getRelativeProjectPath(filePath, projectDir, projectRoot) {
 }
 
 function _getRelativePathForClassic(filePath, packageName, projectRoot) {
-  const projectDir = basename(packageName);
+  const projectDir = _getNormalizedPackageDir(packageName);
   const pathSegments = filePath.split(sep);
   const testFilePath = pathSegments
     .slice(pathSegments.lastIndexOf(projectDir) + 1)
@@ -19,7 +23,7 @@ function _getRelativePathForClassic(filePath, packageName, projectRoot) {
     return testFilePath;
   }
 
-  const projectPath = _getRelativeProjectPath(filePath, projectDir, projectRoot);
+  const projectPath = _getRelativeProjectPath(pathSegments, projectDir, projectRoot);
   return join(projectPath, testFilePath);
 }
 
@@ -40,8 +44,13 @@ function _getRelativePathForEmbroider(filePath, packageName, projectRoot) {
     return testFilePath;
   }
 
-  const projectDir = _getRelativeProjectPath(filePath, basename(packageName), projectRoot);
-  return testFilePath.slice(testFilePath.indexOf(projectDir));
+  const projectDir = _getNormalizedPackageDir(packageName);
+  const projectPath = _getRelativeProjectPath(pathSegments, projectDir, projectRoot);
+  const startIndex = projectPath
+    ? testFilePath.indexOf(projectPath)
+    : testFilePath.indexOf(projectDir) + projectDir.length + 1;
+
+  return testFilePath.slice(startIndex);
 }
 
 function _getRelativePathForEmbroiderInRepo(filePath) {

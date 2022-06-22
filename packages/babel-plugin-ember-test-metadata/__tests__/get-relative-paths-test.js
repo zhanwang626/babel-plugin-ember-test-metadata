@@ -87,6 +87,12 @@ describe('get-relative-paths', () => {
         expected: 'tests/acceptance/foo-test.js',
       },
       {
+        filePath: '/Users/tester/projects/classic-in-workspace/packages/classic/classic/tests/acceptance/foo-test.js',
+        packageName: 'classic',
+        projectRoot: '..',
+        expected: 'classic/tests/acceptance/foo-test.js',
+      },
+      {
         filePath: '/Users/tester/projects/classic-in-workspace/foo/packages/classic/classic/tests/acceptance/foo-test.js',
         packageName: 'classic',
         projectRoot: '../../..',
@@ -194,7 +200,14 @@ describe('get-relative-paths', () => {
           '/private/var/folders/24/v9y37q75019cv62vg5ms10tw001llm/T/embroider/620a67/packages/example-app/tests/acceptance/foo-test.js',
         packageName: 'example-app',
         projectRoot: '.',
-        expected: 'packages/example-app/tests/acceptance/foo-test.js',
+        expected: 'tests/acceptance/foo-test.js',
+      },
+      {
+        filePath:
+          '/private/var/folders/24/v9y37q75019cv62vg5ms10tw001llm/T/embroider/620a67/packages/example-app/tests/acceptance/foo-test.js',
+        packageName: 'example-app',
+        projectRoot: '..',
+        expected: 'example-app/tests/acceptance/foo-test.js',
       },
       {
         filePath:

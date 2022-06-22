@@ -142,11 +142,11 @@ Scenarios.fromProject(workspacesApp)
         const { exitCode, output } = await app.execute('node ./node_modules/ember-cli/bin/ember test --test-port 0');
 
         if (name.includes('InRepoAddon')) {
-          expect(output).toMatch(`# tests 6`);
-          expect(output).toMatch(`# pass  6`);
+          expect(output).toMatch('# tests 6');
+          expect(output).toMatch('# pass  6');
         } else {
-          expect(output).toMatch(`# tests 5`);
-          expect(output).toMatch(`# pass  5`);
+          expect(output).toMatch('# tests 5');
+          expect(output).toMatch('# pass  5');
         }
 
         expect(exitCode).toEqual(0);

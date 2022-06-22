@@ -84,7 +84,7 @@ module.exports = function (defaults) {
 
 Set the environment variable `BABEL_TEST_METADATA=true` to enable the plugin to perform its transformations.
 
-You can additionally pass in a `projectRoot` to the options to accommodate cases such as workspace projects.
+You can additionally pass in a `projectRoot` relative path to the options to accommodate more complex project structures like workspaces.
 
 ```js
 'use strict';

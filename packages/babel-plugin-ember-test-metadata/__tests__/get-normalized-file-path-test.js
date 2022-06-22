@@ -46,7 +46,7 @@ describe('getNormalizedFilePath', () => {
       expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it('returns the normalized filepath for the in app test in workspaces', () => {
+    it('returns the normalized filepath for the in app test with workspaces', () => {
       const filePath = `${appRoot}/packages/example-app/example-app/tests/acceptance/foo-test.js`;
       const expectedPath = 'packages/example-app/tests/acceptance/foo-test.js';
       const opts = {
@@ -61,7 +61,7 @@ describe('getNormalizedFilePath', () => {
       expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it('returns the normalized filepath with the addon name in workspaces', () => {
+    it('returns the normalized filepath with the addon name for workspaces', () => {
       const filePath = `${appRoot}/packages/example-app/example-app/tests/ember-add-in-repo-tests/packages/addons/bar/tests/acceptance/foo-test.js`;
       const expectedPath = 'packages/addons/bar/tests/acceptance/foo-test.js';
       const opts = {
@@ -126,7 +126,7 @@ describe('getNormalizedFilePath', () => {
       expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it('returns the normalized filepath for app tests in workspaces', () => {
+    it('returns the normalized filepath for app tests with workspaces', () => {
       const filePath = `${embroiderRoot}/packages/foo/tests/acceptance/foo-test.js`;
       const expectedPath = 'packages/foo/tests/acceptance/foo-test.js';
       const opts = {
@@ -142,7 +142,7 @@ describe('getNormalizedFilePath', () => {
       expect(normalizedFilePath).toEqual(expectedPath);
     });
 
-    it('returns the normalized filepath with the addon name in workspaces', () => {
+    it('returns the normalized filepath with the addon name with workspaces', () => {
       const filePath = `${embroiderRoot}/packages/foo/tests/ember-add-in-repo-tests/packages/addons/bar/tests/acceptance/foo-test.js`;
       const expectedPath = 'packages/addons/bar/tests/acceptance/foo-test.js';
       const opts = {

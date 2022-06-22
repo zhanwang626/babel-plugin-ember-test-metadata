@@ -8,7 +8,12 @@ const {
 
 /**
  * Get a normalized file path, based on whether the app build is classic or with Embroider
- * @param {object} opts Babel state.file.opts which include root and filename props
+ * @param {Object} opts Babel state.file.opts which include root and filename props
+ * @param {string} opts.packageName the name of the package as specified in Babel plugin options
+ * @param {boolean} opts.isUsingEmbroider whether building using Embroider as specified in Babel plugin options
+ * @param {boolean} opts.projectRoot custom relative path to the project's root as specified in Babel plugin options
+ * @param {string} opts.filename the absolute perceived path of the file being visited
+ * @param {string} opts.root the absolute root project path as seen on disk
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
 function getNormalizedFilePath({ packageName, isUsingEmbroider, projectRoot, filename, root }) {
