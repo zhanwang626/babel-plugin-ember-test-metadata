@@ -10,7 +10,6 @@
   "devDependencies": {
     "@babel-plugin-ember-test-metadata/app-template": "2.0.0",
     "@babel-plugin-ember-test-metadata/workspaces-template": "1.0.0",
-    "@babel-plugin-ember-test-metadata/nonstandard-workspaces-template": "1.0.0",
     "@embroider/compat": "^0.44.1",
     "@embroider/core": "^0.44.1",
     "@embroider/webpack": "^0.44.1",

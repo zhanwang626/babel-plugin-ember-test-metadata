@@ -156,13 +156,13 @@ function workspaceEmbroiderInRepoAddon(project) {
   workspaceAddInRepoAddon(project, { name: 'fake-addon', isEmbroider: true });
 }
 
-function standardWorkspacesApp() {
+function workspacesApp() {
   // eslint-disable-next-line node/no-unpublished-require
   const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/workspaces-template/package.json'));
   return Project.fromDir(dir, { linkDeps: true });
 }
 
-Scenarios.fromProject(standardWorkspacesApp)
+Scenarios.fromProject(workspacesApp)
   .expand({
     workspaceClassic,
     workspaceClassicInRepoAddon,

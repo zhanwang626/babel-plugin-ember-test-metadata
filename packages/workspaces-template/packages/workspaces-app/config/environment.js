@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   let ENV = {
-    modulePrefix: '@babel-plugin-ember-test-metadata/workspaces-app',
+    modulePrefix: 'workspaces-app',
     environment,
     rootURL: '/',
     locationType: 'auto',

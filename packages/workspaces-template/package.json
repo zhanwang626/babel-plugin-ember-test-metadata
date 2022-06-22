@@ -1,13 +1,23 @@
 {
   "name": "@babel-plugin-ember-test-metadata/workspaces-template",
   "version": "1.0.0",
-  "license": "MIT",
   "private": true,
+  "description": "Small description for @babel-plugin-ember-test-metadata/workspaces-template goes here",
+  "repository": "",
+  "license": "MIT",
+  "author": "",
   "workspaces": [
     "packages/*"
   ],
-  "ember-addon": {
-    "projectRoot": "./packages/workspaces-app"
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "ember build --environment=production",
+    "start": "ember serve",
+    "test": "npm-run-all test:*",
+    "test:ember": "ember test"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
@@ -47,5 +57,14 @@
     "prettier": "^2.3.2",
     "qunit": "^2.16.0",
     "qunit-dom": "^1.6.0"
+  },
+  "engines": {
+    "node": "12.* || 14.* || >= 16"
+  },
+  "ember-addon": {
+    "projectRoot": "./packages/workspaces-app"
+  },
+  "ember": {
+    "edition": "octane"
   }
 }
