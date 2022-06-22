@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const { readFileSync } = require('fs-extra');
 const { join } = require('path');
 
 const EMBROIDER_DEPENDENCIES = [
@@ -8,14 +8,19 @@ const EMBROIDER_DEPENDENCIES = [
   'webpack',
 ];
 
+function getFixtureFile(name) {
+  return readFileSync(join(__dirname, '..', '__fixtures__', name), { encoding: 'utf-8' });
+}
+
 function getTestFiles(...files) {
-  return files.reduce((testFiles, name) => {
-    testFiles[name] = readFileSync(join(__dirname, '..', '__fixtures__', name), { encoding: 'utf-8' });
-    return testFiles;
+  return files.reduce((fixtureFiles, name) => {
+    fixtureFiles[name] = getFixtureFile(name);
+    return fixtureFiles;
   }, {});
 }
 
 module.exports = {
   EMBROIDER_DEPENDENCIES,
+  getFixtureFile,
   getTestFiles,
 };

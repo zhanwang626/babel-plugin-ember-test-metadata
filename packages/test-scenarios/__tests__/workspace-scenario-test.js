@@ -1,62 +1,61 @@
 const { Scenarios, Project } = require('scenario-tester');
 const { dirname, join } = require('path');
-const { readFileSync } = require('fs');
+const { readJsonSync } = require('fs-extra');
 const { merge } = require('lodash');
-const { getTestFiles, EMBROIDER_DEPENDENCIES } = require('./helpers/utils');
+const { getFixtureFile, getTestFiles, EMBROIDER_DEPENDENCIES } = require('./helpers/utils');
 
 jest.setTimeout(500000);
 
-function getEmberCliBuildSrc(isEmbroider = false, isAddInRepo = false) {
-  let maybeEmbroiderConfig = '';
-  let appReturn = 'return app.toTree();';
-  let maybeAddInRepoImport = '';
-  let maybeTrees = '';
-
-  if (isEmbroider) {
-    maybeEmbroiderConfig = 'isUsingEmbroider: true,';
-    appReturn = `const { Webpack } = require('@embroider/webpack');
-      return require('@embroider/compat').compatBuild(app, Webpack);`;
-  }
-
-  if (isAddInRepo) {
-    maybeAddInRepoImport = `const { addInRepoTestsToHost } = require('ember-add-in-repo-tests');`;
-    maybeTrees = `trees: {
-        tests: addInRepoTestsToHost({
-          project: defaults.project,
-          shouldIncludeTestsInHost: () => true,
-          projectRoot: '../..',
-        }),
-      },`;
-  }
-
-  return `'use strict';
-
-    const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-    ${maybeAddInRepoImport}
-
-    module.exports = function (defaults) {
-      let app = new EmberApp(defaults, {
-        babel: {
-          plugins: [
-            [
-              require.resolve('babel-plugin-ember-test-metadata'),
-              {
-                enabled: true,
-                packageName: defaults.project.pkg.name,
-                ${maybeEmbroiderConfig}
-                projectRoot: '../..',
-              },
-            ],
-          ],
+function workspaceClassic(project) {
+  merge(project.files, {
+    packages: {
+      'workspaces-app': {
+        'ember-cli-build.js': getFixtureFile('ember-cli-build-classic-workspace.js'),
+        tests: {
+          unit: getTestFiles(
+            'with-hooks-workspace-test.js',
+            'without-hooks-workspace-test.js',
+            'with-multiple-modules-workspace-test.js'
+          ),
         },
-        ${maybeTrees}
-      });
+      },
+    },
+  });
+}
 
-      ${appReturn}
-    };`;
+function workspaceEmbroider(project) {
+  const scenarioPackageJson = readJsonSync(join(__dirname, '..', 'package.json'));
+  const appPackageJson = JSON.parse(project.files.packages['workspaces-app']['package.json']);
+
+  EMBROIDER_DEPENDENCIES.forEach((dependency) => {
+    project.linkDependency(dependency, {
+      baseDir: __dirname,
+    });
+    appPackageJson.devDependencies[dependency] = scenarioPackageJson.devDependencies[dependency];
+  });
+
+  merge(project.files, {
+    packages: {
+      'workspaces-app': {
+        'ember-cli-build.js': getFixtureFile('ember-cli-build-embroider-workspace.js'),
+        'package.json': JSON.stringify(appPackageJson),
+        tests: {
+          unit: getTestFiles(
+            'with-hooks-workspace-test.js',
+            'without-hooks-workspace-test.js',
+            'with-multiple-modules-workspace-test.js'
+          ),
+        },
+      },
+    },
+  });
 }
 
 function workspaceAddInRepoAddon(project, { name, version = '0.0.0', isEmbroider = false }) {
+  const emberCliBuildFileName = isEmbroider
+    ? 'ember-cli-build-embroider-inrepo-workspace.js'
+    : 'ember-cli-build-classic-inrepo-workspace.js';
+
   project.linkDependency('ember-add-in-repo-tests', {
     baseDir: __dirname,
   });
@@ -69,7 +68,7 @@ function workspaceAddInRepoAddon(project, { name, version = '0.0.0', isEmbroider
   merge(project.files, {
     packages: {
       'workspaces-app': {
-        'ember-cli-build.js': getEmberCliBuildSrc(isEmbroider, true),
+        'ember-cli-build.js': getFixtureFile(emberCliBuildFileName),
         'package.json': JSON.stringify(appPackageJson),
       },
       addons: {
@@ -95,51 +94,6 @@ function workspaceAddInRepoAddon(project, { name, version = '0.0.0', isEmbroider
           tests: {
             unit: getTestFiles('with-hooks-assert-includes-workspace-test.js'),
           },
-        },
-      },
-    },
-  });
-}
-
-function workspaceClassic(project) {
-  merge(project.files, {
-    packages: {
-      'workspaces-app': {
-        'ember-cli-build.js': getEmberCliBuildSrc(),
-        tests: {
-          unit: getTestFiles(
-            'with-hooks-workspace-test.js',
-            'without-hooks-workspace-test.js',
-            'with-multiple-modules-workspace-test.js'
-          ),
-        },
-      },
-    },
-  });
-}
-
-function workspaceEmbroider(project) {
-  const scenarioPackageJson = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), { encoding: 'utf-8' }));
-  const appPackageJson = JSON.parse(project.files.packages['workspaces-app']['package.json']);
-
-  EMBROIDER_DEPENDENCIES.forEach((dependency) => {
-    project.linkDependency(dependency, {
-      baseDir: __dirname,
-    });
-    appPackageJson.devDependencies[dependency] = scenarioPackageJson.devDependencies[dependency];
-  });
-
-  merge(project.files, {
-    packages: {
-      'workspaces-app': {
-        'ember-cli-build.js': getEmberCliBuildSrc(true),
-        'package.json': JSON.stringify(appPackageJson),
-        tests: {
-          unit: getTestFiles(
-            'with-hooks-workspace-test.js',
-            'without-hooks-workspace-test.js',
-            'with-multiple-modules-workspace-test.js'
-          ),
         },
       },
     },

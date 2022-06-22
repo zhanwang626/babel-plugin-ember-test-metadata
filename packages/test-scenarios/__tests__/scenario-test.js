@@ -1,59 +1,47 @@
 const { Scenarios, Project } = require('scenario-tester');
 const { dirname } = require('path');
 const { merge } = require('lodash');
-const { getTestFiles, EMBROIDER_DEPENDENCIES } = require('./helpers/utils');
+const { getFixtureFile, getTestFiles, EMBROIDER_DEPENDENCIES } = require('./helpers/utils');
 
 jest.setTimeout(500000);
 
-function getEmberCliBuildSrc(isEmbroider = false, isAddInRepo = false) {
-  let maybeEmbroiderConfig = '';
-  let appReturn = 'return app.toTree();';
-  let maybeAddInRepoImport = '';
-  let maybeTrees = '';
+function classic(project) {
+  merge(project.files, {
+    'ember-cli-build.js': getFixtureFile('ember-cli-build-classic.js'),
+    tests: {
+      unit: getTestFiles(
+        'with-hooks-test.js',
+        'without-hooks-test.js',
+        'with-multiple-modules-test.js'
+      ),
+    },
+  });
+}
 
-  if (isEmbroider) {
-    maybeEmbroiderConfig = 'isUsingEmbroider: true,';
-    appReturn = `const { Webpack } = require('@embroider/webpack');
-      return require('@embroider/compat').compatBuild(app, Webpack);`;
-  }
+function embroider(project) {
+  EMBROIDER_DEPENDENCIES.forEach((dependency) => {
+    project.linkDependency(dependency, {
+      baseDir: __dirname,
+    });
+  });
 
-  if (isAddInRepo) {
-    maybeAddInRepoImport = `const { addInRepoTestsToHost } = require('ember-add-in-repo-tests');`;
-    maybeTrees = `trees: {
-        tests: addInRepoTestsToHost({
-          project: defaults.project,
-          shouldIncludeTestsInHost: () => true,
-        }),
-      },`;
-  }
-
-  return `'use strict';
-
-    const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-    ${maybeAddInRepoImport}
-
-    module.exports = function (defaults) {
-      let app = new EmberApp(defaults, {
-        babel: {
-          plugins: [
-            [
-              require.resolve('babel-plugin-ember-test-metadata'),
-              {
-                enabled: true,
-                packageName: defaults.project.pkg.name,
-                ${maybeEmbroiderConfig}
-              },
-            ],
-          ],
-        },
-        ${maybeTrees}
-      });
-
-      ${appReturn}
-    };`;
+  merge(project.files, {
+    'ember-cli-build.js': getFixtureFile('ember-cli-build-embroider.js'),
+    tests: {
+      unit: getTestFiles(
+        'with-hooks-test.js',
+        'without-hooks-test.js',
+        'with-multiple-modules-test.js'
+      ),
+    },
+  });
 }
 
 function addInRepoAddon(project, { name, version = '0.0.0', isEmbroider = false }) {
+  const emberCliBuildFileName = isEmbroider
+    ? 'ember-cli-build-embroider-inrepo.js'
+    : 'ember-cli-build-classic-inrepo.js';
+
   project.linkDependency('ember-add-in-repo-tests', {
     baseDir: __dirname,
   });
@@ -63,7 +51,7 @@ function addInRepoAddon(project, { name, version = '0.0.0', isEmbroider = false 
   };
 
   merge(project.files, {
-    'ember-cli-build.js': getEmberCliBuildSrc(isEmbroider, true),
+    'ember-cli-build.js': getFixtureFile(emberCliBuildFileName),
     lib: {
       [name]: {
         'package.json': `{
@@ -87,38 +75,6 @@ function addInRepoAddon(project, { name, version = '0.0.0', isEmbroider = false 
           unit: getTestFiles('with-hooks-assert-includes-test.js'),
         },
       },
-    },
-  });
-}
-
-function classic(project) {
-  merge(project.files, {
-    'ember-cli-build.js': getEmberCliBuildSrc(),
-    tests: {
-      unit: getTestFiles(
-        'with-hooks-test.js',
-        'without-hooks-test.js',
-        'with-multiple-modules-test.js'
-      ),
-    },
-  });
-}
-
-function embroider(project) {
-  EMBROIDER_DEPENDENCIES.forEach((dependency) => {
-    project.linkDependency(dependency, {
-      baseDir: __dirname,
-    });
-  });
-
-  merge(project.files, {
-    'ember-cli-build.js': getEmberCliBuildSrc(true),
-    tests: {
-      unit: getTestFiles(
-        'with-hooks-test.js',
-        'without-hooks-test.js',
-        'with-multiple-modules-test.js'
-      ),
     },
   });
 }
