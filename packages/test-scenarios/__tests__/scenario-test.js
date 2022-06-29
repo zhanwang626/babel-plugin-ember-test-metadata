@@ -1,34 +1,13 @@
 const { Scenarios, Project } = require('scenario-tester');
-const { dirname, join } = require('path');
-const { readFileSync } = require('fs');
+const { dirname } = require('path');
 const { merge } = require('lodash');
+const { getFixtureFile, getTestFiles, EMBROIDER_DEPENDENCIES } = require('./helpers/utils');
 
 jest.setTimeout(500000);
 
-async function classic(project) {
+function classic(project) {
   merge(project.files, {
-    'ember-cli-build.js': `'use strict';
-
-const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-
-module.exports = function (defaults) {
-  let app = new EmberApp(defaults, {
-    babel: {
-      plugins: [
-        [
-          require.resolve('babel-plugin-ember-test-metadata'),
-          {
-            enabled: true,
-            packageName: defaults.project.pkg.name,
-          }
-        ]
-      ],
-    }
-  });
-
-  return app.toTree();
-};
-`,
+    'ember-cli-build.js': getFixtureFile('ember-cli-build-classic.js'),
     tests: {
       unit: getTestFiles(
         'with-hooks-test.js',
@@ -39,53 +18,18 @@ module.exports = function (defaults) {
   });
 }
 
-async function classicInRepoAddon(project) {
-  await classic(project);
-  await addInRepoAddon(project, 'fake-addon');
-}
-
-async function embroider(project) {
-  project.linkDependency('@embroider/core', {
-    baseDir: __dirname,
-  });
-  project.linkDependency('@embroider/compat', {
-    baseDir: __dirname,
-  });
-  project.linkDependency('@embroider/webpack', {
-    baseDir: __dirname,
-  });
-  project.linkDependency('webpack', {
-    baseDir: __dirname,
+function embroider(project) {
+  EMBROIDER_DEPENDENCIES.forEach((dependency) => {
+    project.linkDependency(dependency, {
+      baseDir: __dirname,
+    });
   });
 
   merge(project.files, {
-    'ember-cli-build.js': `'use strict';
-
-const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-
-module.exports = function (defaults) {
-  let app = new EmberApp(defaults, {
-    babel: {
-      plugins: [
-        [
-          require.resolve('babel-plugin-ember-test-metadata'),
-          {
-            enabled: true,
-            packageName: defaults.project.pkg.name,
-            isUsingEmbroider: true,
-           }
-        ]
-      ],
-    }
-  });
-
-  const { Webpack } = require('@embroider/webpack');
-  return require('@embroider/compat').compatBuild(app, Webpack);
-};
-`,
+    'ember-cli-build.js': getFixtureFile('ember-cli-build-embroider.js'),
     tests: {
       unit: getTestFiles(
-        'with-hooks-assert-includes-test.js',
+        'with-hooks-test.js',
         'without-hooks-test.js',
         'with-multiple-modules-test.js'
       ),
@@ -93,12 +37,11 @@ module.exports = function (defaults) {
   });
 }
 
-async function embroiderInRepoAddon(project) {
-  await embroider(project);
-  await addInRepoAddon(project, 'fake-addon');
-}
+function addInRepoAddon(project, { name, version = '0.0.0', isEmbroider = false }) {
+  const emberCliBuildFileName = isEmbroider
+    ? 'ember-cli-build-embroider-inrepo.js'
+    : 'ember-cli-build-classic-inrepo.js';
 
-async function addInRepoAddon(project, name, version = '0.0.0') {
   project.linkDependency('ember-add-in-repo-tests', {
     baseDir: __dirname,
   });
@@ -108,15 +51,25 @@ async function addInRepoAddon(project, name, version = '0.0.0') {
   };
 
   merge(project.files, {
+    'ember-cli-build.js': getFixtureFile(emberCliBuildFileName),
     lib: {
       [name]: {
-        'package.json': {
-          name,
-          version,
-          keywords: ['ember-addon'],
-        },
+        'package.json': `{
+          "name": "${name}",
+          "version": "${version}",
+          "keywords": ["ember-addon"]
+        }`,
         'index.js': `module.exports = {
-          name: require("./package").name,
+          name: require('./package').name,
+          babel: [
+            [
+              require.resolve('babel-plugin-ember-test-metadata'),
+              {
+                enabled: true,
+                packageName: '${project.pkg.name}',
+              },
+            ],
+          ],
         };`,
         tests: {
           unit: getTestFiles('with-hooks-assert-includes-test.js'),
@@ -126,22 +79,20 @@ async function addInRepoAddon(project, name, version = '0.0.0') {
   });
 }
 
-function getTestFiles(...files) {
-  return files.reduce((testFiles, file) => {
-    testFiles[file] = readFileSync(join(__dirname, '__fixtures__', file), { encoding: 'utf-8' });
+function classicInRepoAddon(project) {
+  classic(project);
+  addInRepoAddon(project, { name: 'fake-addon' });
+}
 
-    return testFiles;
-  }, {});
+function embroiderInRepoAddon(project) {
+  embroider(project);
+  addInRepoAddon(project, { name: 'fake-addon', isEmbroider: true });
 }
 
 function baseApp() {
-  return Project.fromDir(
-    // eslint-disable-next-line node/no-unpublished-require
-    dirname(require.resolve('@babel-plugin-ember-test-metadata/app-template/package.json')),
-    {
-      linkDeps: true,
-    }
-  );
+  // eslint-disable-next-line node/no-unpublished-require
+  const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/app-template/package.json'));
+  return Project.fromDir(dir, { linkDeps: true });
 }
 
 Scenarios.fromProject(baseApp)
@@ -157,6 +108,8 @@ Scenarios.fromProject(baseApp)
     });
   })
   .forEachScenario((scenario) => {
+    const { name } = scenario;
+
     describe(scenario.name, () => {
       let app;
 
@@ -165,110 +118,17 @@ Scenarios.fromProject(baseApp)
       });
 
       it('runs tests', async () => {
-        let result = await app.execute('node ./node_modules/ember-cli/bin/ember test');
+        const { exitCode, output } = await app.execute('node ./node_modules/ember-cli/bin/ember test  --test-port 0');
 
-        expect(result.output).toMatch('# tests 5');
-        expect(result.output).toMatch('# pass  5');
-        expect(result.exitCode).toEqual(0);
+        if (name.includes('InRepoAddon')) {
+          expect(output).toMatch('# tests 6');
+          expect(output).toMatch('# pass  6');
+        } else {
+          expect(output).toMatch('# tests 5');
+          expect(output).toMatch('# pass  5');
+        }
+
+        expect(exitCode).toEqual(0);
       });
     });
-  });
-
-function workspacesBaseApp() {
-  // eslint-disable-next-line node/no-unpublished-require
-  const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/workspaces-template/packages/workspaces-app/package.json'));
-  return Project.fromDir(dir, { linkDeps: true })
-}
-
-Scenarios.fromProject(workspacesBaseApp)
-  .expand({ classic })
-  .map('app scenarios', (project) => {
-    project.linkDependency('babel-plugin-ember-test-metadata', {
-      baseDir: __dirname,
-    });
-  }).
-  forEachScenario((scenario) => {
-    describe(scenario.name, () => {
-      let app;
-
-      beforeAll(async () => {
-        app = await scenario.prepare();
-      });
-
-      it('runs tests', async () => {
-        let { output } = await app.execute('node ./node_modules/ember-cli/bin/ember test');
-
-        expect(output).toMatch('# tests 5');
-        expect(output).toMatch('# pass  5');
-      })
-    })
-  });
-
-function nonStandardWorkspacesApp() {
-  // eslint-disable-next-line node/no-unpublished-require
-  const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/nonstandard-workspaces-template/package.json'));
-  return Project.fromDir(dir, { linkDeps: true })
-}
-
-
-async function nonStandardWorkspace(project) {
-  merge(project.files, {
-    packages: {
-      'nonstandard-workspaces-app': {
-        'ember-cli-build.js': `'use strict';
-
-const EmberApp = require('ember-cli/lib/broccoli/ember-app');
-
-module.exports = function (defaults) {
-  let app = new EmberApp(defaults, {
-    babel: {
-      plugins: [
-        [
-          require.resolve('babel-plugin-ember-test-metadata'),
-          {
-            enabled: true,
-            packageName: defaults.project.pkg.name,
-          }
-        ]
-      ],
-    }
-  });
-
-  return app.toTree();
-};
-`,
-        tests: {
-          unit: getTestFiles(
-            'with-hooks-test.js',
-            'without-hooks-test.js',
-            'with-multiple-modules-test.js'
-          ),
-        },
-      }
-    }
-  });
-}
-
-Scenarios.fromProject(nonStandardWorkspacesApp)
-  .expand({ nonStandardWorkspace })
-  .map('app scenarios', (project) => {
-    project.linkDependency('babel-plugin-ember-test-metadata', {
-      baseDir: __dirname,
-    });
-  }).
-  forEachScenario((scenario) => {
-    describe(scenario.name, () => {
-      let app;
-
-      beforeAll(async () => {
-        app = await scenario.prepare();
-      });
-
-      it('runs tests', async () => {
-        let { output } = await app.execute('node ./node_modules/ember-cli/bin/ember test');
-
-        expect(output).toMatch('# tests 5');
-        expect(output).toMatch('# pass  5');
-      })
-    })
   });
