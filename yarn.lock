@@ -1531,11 +1531,13 @@
     ember-cli-babel "^7.26.6"
 
 "@ember/test-helpers@^2.4.2":
-  version "2.7.0"
-  resolved "http://dev-artifactory.corp.linkedin.com:8081/artifactory/api/npm/npm-external-new/@ember/test-helpers/-/@ember/test-helpers-2.7.0.tgz#d8e08b614cdd5eac647689d655e78e1de725f474"
-  integrity sha1-2OCLYUzdXqxkdonWVeeOHecl9HQ=
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@ember/test-helpers/-/test-helpers-2.8.1.tgz#20f2e30d48172c2ff713e1db7fbec5352f918d4e"
+  integrity sha512-jbsYwWyAdhL/pdPu7Gb3SG1gvIXY70FWMtC/Us0Kmvk82Y+5YUQ1SOC0io75qmOGYQmH7eQrd/bquEVd+4XtdQ==
   dependencies:
     "@ember/test-waiters" "^3.0.0"
+    "@embroider/macros" "^1.6.0"
+    "@embroider/util" "^1.6.0"
     broccoli-debug "^0.6.5"
     broccoli-funnel "^3.0.8"
     ember-cli-babel "^7.26.6"
@@ -1727,6 +1729,20 @@
     resolve "^1.20.0"
     semver "^7.3.2"
 
+"@embroider/macros@1.8.0", "@embroider/macros@^1.6.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@embroider/macros/-/macros-1.8.0.tgz#9e947e6292f0d7768a0f743d883c3e794457eaec"
+  integrity sha512-jeRoUMPbZ/ADBU0FsyBGS1UgV5vQmwIPnpbVUsJ0XcZFZq/8ZHV6Ts4yeubvH/lePnUpHaKogs4dDvGk5tpQKw==
+  dependencies:
+    "@embroider/shared-internals" "1.8.0"
+    assert-never "^1.2.1"
+    babel-import-util "^1.1.0"
+    ember-cli-babel "^7.26.6"
+    find-up "^5.0.0"
+    lodash "^4.17.21"
+    resolve "^1.20.0"
+    semver "^7.3.2"
+
 "@embroider/shared-internals@0.44.1":
   version "0.44.1"
   resolved "https://registry.yarnpkg.com/@embroider/shared-internals/-/shared-internals-0.44.1.tgz#355b2dbbb943fdc9583d1431508f22717864875e"
@@ -1738,6 +1754,29 @@
     resolve-package-path "^4.0.1"
     semver "^7.3.5"
     typescript-memoize "^1.0.1"
+
+"@embroider/shared-internals@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@embroider/shared-internals/-/shared-internals-1.8.0.tgz#4c9b563e5f155410d982a30667b027a227be7312"
+  integrity sha512-TsjApG80SDVZ+dxkshO4FtzwzZYupmyl1w3Bnehfbk1429dsv30K+/DhcxDFIlKXPtsvCF9mdQY3mYUs+hoLOg==
+  dependencies:
+    babel-import-util "^1.1.0"
+    ember-rfc176-data "^0.3.17"
+    fs-extra "^9.1.0"
+    js-string-escape "^1.0.1"
+    lodash "^4.17.21"
+    resolve-package-path "^4.0.1"
+    semver "^7.3.5"
+    typescript-memoize "^1.0.1"
+
+"@embroider/util@^1.6.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@embroider/util/-/util-1.8.0.tgz#91593b14798ce579a8ab7bb10b190f29fd83b52f"
+  integrity sha512-uCR8fpBBVexW1FvqEJMzI52iiEM7aYJIIJgQ3S5za+d1Je2jPH3YUVJ2RR6gAxhjYBdazRG7FbUCYvZz/6cOPA==
+  dependencies:
+    "@embroider/macros" "1.8.0"
+    broccoli-funnel "^3.0.5"
+    ember-cli-babel "^7.23.1"
 
 "@embroider/webpack@^0.44.1":
   version "0.44.1"
@@ -3828,6 +3867,11 @@ babel-helpers@^6.24.1:
   dependencies:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
+
+babel-import-util@^1.1.0:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/babel-import-util/-/babel-import-util-1.2.2.tgz#1027560e143a4a68b1758e71d4fadc661614e495"
+  integrity sha512-8HgkHWt5WawRFukO30TuaL9EiDUOdvyKtDwLma4uBNeUSDbOO0/hiPfavrOWxSS6J6TKXfukWHZ3wiqZhJ8ONQ==
 
 babel-jest@^27.0.6:
   version "27.0.6"
@@ -11440,8 +11484,8 @@ lodash.uniqby@^4.7.0:
 
 lodash@4.17.21, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
   version "4.17.21"
-  resolved "http://dev-artifactory.corp.linkedin.com:8081/artifactory/api/npm/npm-external-new/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@^1.0.2:
   version "1.0.2"
