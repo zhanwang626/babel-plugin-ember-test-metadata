@@ -1,5 +1,5 @@
-packages/**/tmp
-packages/**/dist
+packages/*/node_modules
+packages/*/tmp
+packages/*/dist
 node_modules
 yarn-error.log
-.eslintcache

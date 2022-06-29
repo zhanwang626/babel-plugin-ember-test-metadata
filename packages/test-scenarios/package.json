@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "private": true,
   "dependencies": {
-    "fs-extra": "^10.1.0",
     "jest": "^27.1.1",
     "lodash": "^4.17.21",
     "scenario-tester": "^1.0.2"
@@ -11,11 +10,12 @@
   "devDependencies": {
     "@babel-plugin-ember-test-metadata/app-template": "2.0.0",
     "@babel-plugin-ember-test-metadata/workspaces-template": "1.0.0",
+    "@babel-plugin-ember-test-metadata/nonstandard-workspaces-template": "1.0.0",
     "@embroider/compat": "^0.44.1",
     "@embroider/core": "^0.44.1",
     "@embroider/webpack": "^0.44.1",
     "babel-plugin-ember-test-metadata": "2.0.0",
-    "ember-add-in-repo-tests": "2.0.0",
+    "ember-add-in-repo-tests": "2.0.0-beta.0",
     "webpack": "^5.52.0"
   },
   "scripts": {
@@ -24,8 +24,7 @@
   "jest": {
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
-      "/__fixtures__/",
-      "__tests__/helpers"
+      "/__fixtures__/"
     ]
   },
   "volta": {
