@@ -1,3 +1,28 @@
+## v3.0.0 (2022-06-29)
+
+#### :boom: Breaking Change
+* `app-template`, `babel-plugin-ember-test-metadata`, `workspaces-template`
+  * [#166](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/166) Upgrades Node to v14 ([@drewlee](https://github.com/drewlee))
+
+#### :rocket: Enhancement
+* `babel-plugin-ember-test-metadata`, `nonstandard-workspaces-template`, `test-scenarios`, `workspaces-template`
+  * [#165](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/165) Fixes test filePath for workspaces projects ([@drewlee](https://github.com/drewlee))
+  * [#160](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/160) Fixes test filePath for workspace projects ([@drewlee](https://github.com/drewlee))
+
+#### :house: Internal
+* `nonstandard-workspaces-template`, `test-scenarios`, `workspaces-template`
+  * [#145](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/145) Create test workspace with ember app ([@ckundo](https://github.com/ckundo))
+* `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#49](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/49) Renaming utils and removing deprecated portions of test setup ([@scalvert](https://github.com/scalvert))
+* Other
+  * [#45](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/45) Adds dependabot.yml for dependency updates ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 3
+- Andrew A Lee ([@drewlee](https://github.com/drewlee))
+- Cameron Cundiff ([@ckundo](https://github.com/ckundo))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+
+
 ## v2.0.0 (2021-09-28)
 
 #### :boom: Breaking Change
