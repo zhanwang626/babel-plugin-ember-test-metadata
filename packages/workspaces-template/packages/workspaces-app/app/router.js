@@ -1,5 +1,5 @@
 import EmberRouter from '@ember/routing/router';
-import config from 'workspaces-app/config/environment';
+import config from '@babel-plugin-ember-test-metadata/workspaces-app/config/environment';
 
 export default class Router extends EmberRouter {
   location = config.locationType;
