@@ -113,7 +113,7 @@ function workspaceEmbroiderInRepoAddon(project) {
 function workspacesApp() {
   // eslint-disable-next-line node/no-unpublished-require
   const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/workspaces-template/package.json'));
-  return Project.fromDir(dir, { linkDeps: true });
+  return Project.fromDir(dir, { linkDevDeps: true });
 }
 
 Scenarios.fromProject(workspacesApp)
