@@ -92,7 +92,7 @@ function embroiderInRepoAddon(project) {
 function baseApp() {
   // eslint-disable-next-line node/no-unpublished-require
   const dir = dirname(require.resolve('@babel-plugin-ember-test-metadata/app-template/package.json'));
-  return Project.fromDir(dir, { linkDeps: true });
+  return Project.fromDir(dir, { linkDevDeps: true });
 }
 
 Scenarios.fromProject(baseApp)
