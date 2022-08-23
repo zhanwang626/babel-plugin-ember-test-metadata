@@ -98,6 +98,18 @@ describe('get-relative-paths', () => {
         projectRoot: '../../..',
         expected: 'foo/packages/classic/tests/acceptance/foo-test.js',
       },
+      {
+        filePath: '/Users/tester/projects/classic-web/packages/classic-web/classic-web/tests/acceptance/foo-test.js',
+        packageName: 'classic-web',
+        projectRoot: '../..',
+        expected: 'packages/classic-web/tests/acceptance/foo-test.js',
+      },
+      {
+        filePath: '/Users/tester/projects/classic-web/packages/classic-web/@scoped/classic-web/tests/acceptance/foo-test.js',
+        packageName: 'classic-web',
+        projectRoot: '../..',
+        expected: 'packages/classic-web/tests/acceptance/foo-test.js',
+      },
     ];
 
     testCases.forEach(({ filePath, packageName, projectRoot, expected }) => {
@@ -222,6 +234,13 @@ describe('get-relative-paths', () => {
         packageName: 'example-app',
         projectRoot: '../../../..',
         expected: 'bar/baz/packages/example-app/tests/acceptance/foo-test.js',
+      },
+      {
+        filePath:
+          '/private/var/folders/24/v9y37q75019cv62vg5ms10tw001llm/T/embroider/620a67/foo/example-app/packages/example-app/tests/acceptance/foo-test.js',
+        packageName: 'example-app',
+        projectRoot: '../..',
+        expected: 'packages/example-app/tests/acceptance/foo-test.js',
       },
     ];
 
