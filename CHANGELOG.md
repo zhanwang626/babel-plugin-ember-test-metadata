@@ -1,3 +1,13 @@
+## v3.0.1 (2022-08-24)
+
+#### :bug: Bug Fix
+* `babel-plugin-ember-test-metadata`
+  * [#185](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/185) Fixes incorrect file paths for duplicate segments in classic workspaces ([@drewlee](https://github.com/drewlee))
+
+#### Committers: 1
+- Andrew A Lee ([@drewlee](https://github.com/drewlee))
+
+
 ## v3.0.0 (2022-06-29)
 
 #### :boom: Breaking Change
