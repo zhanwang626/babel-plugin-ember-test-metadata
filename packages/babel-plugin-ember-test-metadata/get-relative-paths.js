@@ -6,7 +6,7 @@ function _getNormalizedPackageDir(packageName) {
 }
 
 function _getRelativeProjectPath(pathSegments, projectDir, projectRoot) {
-  const appRoot = pathSegments.slice(0, pathSegments.indexOf(projectDir) + 1);
+  const appRoot = pathSegments.slice(0, pathSegments.lastIndexOf(projectDir) + 1);
   const projectBaseDir = basename(resolve(appRoot.join(sep), projectRoot));
 
   return appRoot.slice(appRoot.indexOf(projectBaseDir) + 1).join(sep);
@@ -16,11 +16,15 @@ function _getRelativePathForClassic(filePath, packageName, projectRoot) {
   const projectDir = _getNormalizedPackageDir(packageName);
   const pathSegments = filePath.split(sep);
   const testFilePath = pathSegments
-    .slice(pathSegments.lastIndexOf(projectDir) + 1)
+    .splice(pathSegments.lastIndexOf(projectDir) + 1)
     .join(sep);
 
   if (!projectRoot) {
     return testFilePath;
+  }
+
+  if (pathSegments.lastIndexOf(projectDir, -2) > -1) {
+    pathSegments.pop();
   }
 
   const projectPath = _getRelativeProjectPath(pathSegments, projectDir, projectRoot);
