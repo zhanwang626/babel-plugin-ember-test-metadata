@@ -12,6 +12,13 @@ function _getRelativeProjectPath(pathSegments, projectDir, projectRoot) {
   return appRoot.slice(appRoot.indexOf(projectBaseDir) + 1).join(sep);
 }
 
+function _getRelativeAddonPath(pathSegments, projectDir, projectRoot) {
+  const addonRoot = pathSegments.slice(0, pathSegments.lastIndexOf(projectDir));
+  const projectBaseDir = basename(resolve(addonRoot.join(sep), projectRoot));
+
+  return addonRoot.slice(addonRoot.indexOf(projectBaseDir) + 1).join(sep);
+}
+
 function _getRelativePathForClassic(filePath, packageName, projectRoot) {
   const projectDir = _getNormalizedPackageDir(packageName);
   const pathSegments = filePath.split(sep);
@@ -61,9 +68,26 @@ function _getRelativePathForEmbroiderInRepo(filePath) {
   return _getRelativePathForClassicInRepo(filePath);
 }
 
+function _getRelativePathForBuildIsolation(filePath, packageName, projectRoot) {
+  const pathSegments = filePath.split(sep);
+  const testFilePath = pathSegments
+    .slice(pathSegments.indexOf('tests'))
+    .join(sep);
+
+  if (!projectRoot) {
+    return testFilePath;
+  }
+
+  const projectDir = _getNormalizedPackageDir(packageName);
+  const projectPath = _getRelativeAddonPath(pathSegments, projectDir, projectRoot);
+
+  return join(projectPath, testFilePath);
+}
+
 module.exports = {
   _getRelativePathForClassic,
   _getRelativePathForClassicInRepo,
   _getRelativePathForEmbroider,
   _getRelativePathForEmbroiderInRepo,
+  _getRelativePathForBuildIsolation,
 };

@@ -158,4 +158,24 @@ describe('getNormalizedFilePath', () => {
       expect(normalizedFilePath).toEqual(expectedPath);
     });
   });
+
+  describe('build isolation', () => {
+    const appRoot = '/Users/tester/workspace/personal/test-bed/example-app';
+
+    it('returns the normalized filepath for build isolation addon test', () => {
+      const filePath = `${appRoot}/packages/addons/example-addon/example-app/tests/acceptance/foo-test.js`;
+      const expectedPath = 'packages/addons/example-addon/tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        root: appRoot,
+        packageName: 'example-app',
+        projectRoot: '../../..',
+        isBuildIsolation: true,
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+  });
 });
