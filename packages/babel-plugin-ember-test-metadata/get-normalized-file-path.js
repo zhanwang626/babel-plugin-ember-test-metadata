@@ -19,8 +19,9 @@ const {
  */
 function getNormalizedFilePath({ packageName, getCustomNormalizedFilePath, isUsingEmbroider, projectRoot, filename, root }) {
   if (typeof getCustomNormalizedFilePath === 'function') {
-
-    return getCustomNormalizedFilePath(filename, packageName, projectRoot);
+    const options = { packageName, isUsingEmbroider, projectRoot, filename, root };
+  
+    return getCustomNormalizedFilePath(options);
   } else if (!isUsingEmbroider) {
     if (filename.includes('ember-add-in-repo-tests')) {
       return _getRelativePathForClassicInRepo(filename);

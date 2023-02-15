@@ -113,7 +113,7 @@ module.exports = function (defaults) {
 };
 ```
 
-You can also pass a custom function to normalize your test file path.
+You can also pass a custom function to normalize the test file path.
 ```js
 'use strict';
 
@@ -121,7 +121,7 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   function customNormallizedFilePath(filePath, packageName, projectRoot) {
-    // Your custom normalize process
+    // Custom normalization
   }
 
   let app = new EmberApp(defaults, {
@@ -133,7 +133,7 @@ module.exports = function (defaults) {
             enabled: !!process.env.BABEL_TEST_METADATA,
             packageName: defaults.project.pkg.name,
             packageRoot: '../..',
-            getCustomNormalizedFilePath: customNormallizedFilePath,
+            getCustomNormalizedFilePath: customNormalizedFilePath,
           },
         ],
       ],

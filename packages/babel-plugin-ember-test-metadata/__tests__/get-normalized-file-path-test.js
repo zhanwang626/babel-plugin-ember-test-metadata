@@ -1,4 +1,4 @@
-const { basename, join, resolve, sep } = require('path');
+const { join, sep } = require('path');
 const { getNormalizedFilePath } = require('../get-normalized-file-path');
 
 describe('getNormalizedFilePath', () => {
@@ -163,20 +163,14 @@ describe('getNormalizedFilePath', () => {
   describe('custom normalized filePath function', () => {
     const appRoot = '/Users/tester/workspace/personal/test-bed/example-app';
 
-    function normalizeBuildIsolationPath(filePath, packageName, projectRoot) {
-        const pathSegments = filePath.split(sep);
+    function normalizeBuildIsolationPath(options) {
+        const pathSegments = options.filename.split(sep);
         const testFilePath = pathSegments
           .slice(pathSegments.indexOf('tests'))
           .join(sep);
-      
-        if (!projectRoot) {
-          return testFilePath;
-        }
 
-        const addonRoot = pathSegments.slice(0, pathSegments.lastIndexOf(packageName));
-        const projectBaseDir = basename(resolve(addonRoot.join(sep), projectRoot));
-        const projectPath = addonRoot.slice(addonRoot.indexOf(projectBaseDir) + 1).join(sep);
-        
+        const projectPath = pathSegments.slice(pathSegments.indexOf(options.packageName) + 1, pathSegments.indexOf('tests') - 1).join(sep);
+
         return join(projectPath, testFilePath);
       }
 
@@ -185,9 +179,7 @@ describe('getNormalizedFilePath', () => {
       const expectedPath = 'packages/addons/example-addon/tests/acceptance/foo-test.js';
       const opts = {
         filename: filePath,
-        root: appRoot,
         packageName: 'example-app',
-        projectRoot: '../../..',
         getCustomNormalizedFilePath: normalizeBuildIsolationPath,
       };
 
