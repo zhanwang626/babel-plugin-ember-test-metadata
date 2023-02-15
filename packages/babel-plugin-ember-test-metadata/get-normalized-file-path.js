@@ -4,7 +4,6 @@ const {
   _getRelativePathForClassicInRepo,
   _getRelativePathForEmbroider,
   _getRelativePathForEmbroiderInRepo,
-  _getRelativePathForBuildIsolation,
 } = require('./get-relative-paths');
 
 /**
@@ -12,16 +11,16 @@ const {
  * @param {Object} opts Babel state.file.opts which include root and filename props
  * @param {string} opts.packageName the name of the package as specified in Babel plugin options
  * @param {boolean} opts.isUsingEmbroider whether building using Embroider as specified in Babel plugin options
- * @param {boolean} opts.isBuildIsolation some large apps use build isolation as specified in Babel plugin options
+ * @param {boolean} opts.getCustomNormalizedFilePath custom function to get normalized file path as specified in Babel plugin options
  * @param {boolean} opts.projectRoot custom relative path to the project's root as specified in Babel plugin options
  * @param {string} opts.filename the absolute perceived path of the file being visited
  * @param {string} opts.root the absolute root project path as seen on disk
  * @returns {string} E.g. tests/acceptance/my-test.js
  */
-function getNormalizedFilePath({ packageName, isBuildIsolation, isUsingEmbroider, projectRoot, filename, root }) {
-  if (isBuildIsolation) {
+function getNormalizedFilePath({ packageName, getCustomNormalizedFilePath, isUsingEmbroider, projectRoot, filename, root }) {
+  if (typeof getCustomNormalizedFilePath === 'function') {
 
-    return _getRelativePathForBuildIsolation(filename, packageName, projectRoot);
+    return getCustomNormalizedFilePath(filename, packageName, projectRoot);
   } else if (!isUsingEmbroider) {
     if (filename.includes('ember-add-in-repo-tests')) {
       return _getRelativePathForClassicInRepo(filename);

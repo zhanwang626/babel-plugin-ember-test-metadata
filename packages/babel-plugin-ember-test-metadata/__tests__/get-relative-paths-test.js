@@ -3,7 +3,6 @@ const {
   _getRelativePathForClassicInRepo,
   _getRelativePathForEmbroider,
   _getRelativePathForEmbroiderInRepo,
-  _getRelativePathForBuildIsolation,
 } = require('../get-relative-paths');
 
 describe('get-relative-paths', () => {
@@ -271,21 +270,6 @@ describe('get-relative-paths', () => {
 
     testCases.forEach(({ filePath, expected }) => {
       expect(_getRelativePathForEmbroiderInRepo(filePath)).toEqual(expected);
-    });
-  });
-
-  it('can return relative paths for huge projects build isolation tests for addons', () => {
-    const testCases = [
-      {
-        filePath: '/Users/tester/projects/test-web/packages/addons/addon-name/test-web/tests/integration/components/foo-test.js',
-        packageName: 'test-web',
-        projectRoot: '../../..',
-        expected: 'packages/addons/addon-name/tests/integration/components/foo-test.js',
-      },
-    ];
-
-    testCases.forEach(({ filePath, packageName, projectRoot, expected }) => {
-      expect(_getRelativePathForBuildIsolation(filePath, packageName, projectRoot)).toEqual(expected);
     });
   });
 });
