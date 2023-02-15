@@ -1,3 +1,4 @@
+const { join, sep } = require('path');
 const { getNormalizedFilePath } = require('../get-normalized-file-path');
 
 describe('getNormalizedFilePath', () => {
@@ -151,6 +152,35 @@ describe('getNormalizedFilePath', () => {
         packageName: 'foo',
         isUsingEmbroider: true,
         projectRoot: '../..'
+      };
+
+      const normalizedFilePath = getNormalizedFilePath(opts);
+
+      expect(normalizedFilePath).toEqual(expectedPath);
+    });
+  });
+
+  describe('custom normalized filePath function', () => {
+    const appRoot = '/Users/tester/workspace/personal/test-bed/example-app';
+
+    function normalizeBuildIsolationPath(options) {
+        const pathSegments = options.filename.split(sep);
+        const testFilePath = pathSegments
+          .slice(pathSegments.indexOf('tests'))
+          .join(sep);
+
+        const projectPath = pathSegments.slice(pathSegments.indexOf(options.packageName) + 1, pathSegments.indexOf('tests') - 1).join(sep);
+
+        return join(projectPath, testFilePath);
+      }
+
+    it('returns the normalized filepath for build isolation addon test', () => {
+      const filePath = `${appRoot}/packages/addons/example-addon/example-app/tests/acceptance/foo-test.js`;
+      const expectedPath = 'packages/addons/example-addon/tests/acceptance/foo-test.js';
+      const opts = {
+        filename: filePath,
+        packageName: 'example-app',
+        getCustomNormalizedFilePath: normalizeBuildIsolationPath,
       };
 
       const normalizedFilePath = getNormalizedFilePath(opts);

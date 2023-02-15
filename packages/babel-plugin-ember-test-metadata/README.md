@@ -112,3 +112,36 @@ module.exports = function (defaults) {
   return app.toTree();
 };
 ```
+
+You can also pass a custom function to normalize the test file path.
+```js
+'use strict';
+
+const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+
+module.exports = function (defaults) {
+  function customNormalizedFilePath(filePath, packageName, projectRoot) {
+    // Custom normalization
+  }
+
+  let app = new EmberApp(defaults, {
+    babel: {
+      plugins: [
+        [
+          require.resolve('babel-plugin-ember-test-metadata'),
+          {
+            enabled: !!process.env.BABEL_TEST_METADATA,
+            packageName: defaults.project.pkg.name,
+            packageRoot: '../..',
+            getCustomNormalizedFilePath: customNormalizedFilePath,
+          },
+        ],
+      ],
+    },
+  });
+
+  // additional configuration
+
+  return app.toTree();
+};
+```
