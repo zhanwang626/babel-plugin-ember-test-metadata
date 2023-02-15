@@ -1,3 +1,35 @@
+## v3.1.0 (2023-02-15)
+
+#### :boom: Breaking Change
+* `app-template`, `babel-plugin-ember-test-metadata`, `workspaces-template`
+  * [#166](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/166) Upgrades Node to v14 ([@drewlee](https://github.com/drewlee))
+
+#### :rocket: Enhancement
+* `babel-plugin-ember-test-metadata`
+  * [#233](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/233) feat: add custom function as a babel option to normalize test file path ([@zhanwang626](https://github.com/zhanwang626))
+* `babel-plugin-ember-test-metadata`, `nonstandard-workspaces-template`, `test-scenarios`, `workspaces-template`
+  * [#165](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/165) Fixes test filePath for workspaces projects ([@drewlee](https://github.com/drewlee))
+  * [#160](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/160) Fixes test filePath for workspace projects ([@drewlee](https://github.com/drewlee))
+
+#### :bug: Bug Fix
+* `babel-plugin-ember-test-metadata`
+  * [#185](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/185) Fixes incorrect file paths for duplicate segments in classic workspaces ([@drewlee](https://github.com/drewlee))
+
+#### :house: Internal
+* `nonstandard-workspaces-template`, `test-scenarios`, `workspaces-template`
+  * [#145](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/145) Create test workspace with ember app ([@ckundo](https://github.com/ckundo))
+* `babel-plugin-ember-test-metadata`, `test-scenarios`
+  * [#49](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/49) Renaming utils and removing deprecated portions of test setup ([@scalvert](https://github.com/scalvert))
+* Other
+  * [#45](https://github.com/babel-plugin-ember-test-metadata/babel-plugin-ember-test-metadata/pull/45) Adds dependabot.yml for dependency updates ([@scalvert](https://github.com/scalvert))
+
+#### Committers: 4
+- Andrew A Lee ([@drewlee](https://github.com/drewlee))
+- Cameron Cundiff ([@ckundo](https://github.com/ckundo))
+- Steve Calvert ([@scalvert](https://github.com/scalvert))
+- Zhan Wang ([@zhanwang626](https://github.com/zhanwang626))
+
+
 ## v3.0.1 (2022-08-24)
 
 #### :bug: Bug Fix
