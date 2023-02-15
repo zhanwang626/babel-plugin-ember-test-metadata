@@ -120,7 +120,7 @@ You can also pass a custom function to normalize the test file path.
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
-  function customNormallizedFilePath(filePath, packageName, projectRoot) {
+  function customNormalizedFilePath(filePath, packageName, projectRoot) {
     // Custom normalization
   }
 
